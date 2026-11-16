@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify HTML and documentation
+      - name: Check contract and documentation
         run: |
+          python3 tests/check_contract.py
           python3 - <<'PY'
           from pathlib import Path
-          t=Path('index.html').read_text()
-          for s in ['maplibregl.Map','openfreemap.org','geolocation','Vintage','Ilustrado','Topográfico']:
-              assert s in t, f'Missing {s}'
-          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0001.md']:
-              assert Path(p).is_file(), f'Missing {p}'
-          print('Static validation OK')
+          s=Path('index.html').read_text()
+          js=s.rsplit('<script>',1)[1].split('</script>',1)[0]
+          Path('/tmp/mapp.js').write_text(js)
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0001.md','docs/REQUERIMIENTOS/MAP-0003.md','docs/DECISIONES/ADR-0003.md','docs/PRUEBAS/UAT-MAP-0003.md']:
+              assert Path(p).is_file(),p
           PY
+          node --check /tmp/mapp.js

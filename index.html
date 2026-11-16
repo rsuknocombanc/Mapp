@@ -32,92 +32,191 @@
 .tool{width:45px;height:45px;border-radius:5px;background:#eee0c6e8;border-color:#977b5f;font-weight:500;box-shadow:0 3px 9px #2d261b29}
 #rightTools{bottom:calc(env(safe-area-inset-bottom) + 163px)}
 @media(max-height:670px){#rightTools{bottom:calc(env(safe-area-inset-bottom) + 153px)}#panel{padding:9px}#panel .panelHeading{margin-bottom:6px}}
+
+/* Mapp v0.3.1 — search atlas and elevation legend; mobile Safari first */
+#searchShell{position:absolute;z-index:8;top:calc(env(safe-area-inset-top) + 103px);left:16px;width:min(410px,calc(100vw - 94px));font-family:system-ui,-apple-system,sans-serif}
+#searchForm{display:flex;align-items:center;gap:5px;background:#f5ecd7f0;border:1px solid #91724c;border-radius:5px;padding:3px 5px;box-shadow:0 4px 13px #372b1b32}
+#searchInput{font:14px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:#403929;background:transparent;border:none;outline:none;min-width:0;width:100%;height:36px;padding:4px 7px}
+#searchInput::placeholder{color:#84765e}
+#searchClear{width:30px;height:34px;flex:none;background:transparent;border:0;color:#80674b;font-size:21px;cursor:pointer}
+#searchSubmit{min-width:37px;height:34px;border:0;border-left:1px solid #bcac8a;background:transparent;color:#9d5530;cursor:pointer;display:grid;place-items:center;font:21px Georgia,serif}
+#searchResults{display:none;background:#f7edd8;border:1px solid #91724c;border-radius:0 0 7px 7px;box-shadow:0 9px 20px #372b1b37;max-height:min(43vh,330px);overflow:auto;-webkit-overflow-scrolling:touch}
+#searchResults.open{display:block}
+.searchRow{display:block;text-align:left;width:100%;font:13px/1.3 system-ui,sans-serif;background:transparent;border:0;border-bottom:1px solid #d4c7a9;color:#463b2d;padding:12px 12px;cursor:pointer}
+.searchRow small{display:block;font:11px/1.3 system-ui,sans-serif;color:#816c50;margin-top:3px}
+.searchRow:focus-visible,.searchRow:hover{background:#e9debb}
+.searchInfo{padding:11px 12px;font:12px/1.5 system-ui,sans-serif;color:#79664c}
+#demoTag{top:calc(env(safe-area-inset-top) + 158px);max-width:calc(100vw - 85px)}
+#compass{top:calc(env(safe-area-inset-top) + 100px)}
+#elevationLegend{display:flex;align-items:center;gap:9px;margin:11px 3px 0;padding-top:8px;border-top:1px solid #bca9898a;font:9px Georgia,serif;color:#776448;letter-spacing:.06em}
+#elevationLegend .legendTitle{white-space:nowrap;letter-spacing:.1em}
+#elevationLegend .bands{flex:1;display:flex;align-items:center;gap:2px;min-width:0}
+.elevBand{height:9px;flex:1;border:1px solid #92896b55}
+#elevationLegend .legendLabels{font:9px system-ui,sans-serif;color:#796951;white-space:nowrap}
+#status{margin-top:8px;padding-top:7px}
+#map:after{opacity:.11;mix-blend-mode:multiply}#map.smooth:after{opacity:.065}#map.ink:after{opacity:.09}
+@media(max-width:420px){#header h1{font-size:25px}#searchShell{top:calc(env(safe-area-inset-top) + 87px)}#compass{top:calc(env(safe-area-inset-top) + 87px)}#demoTag{top:calc(env(safe-area-inset-top) + 145px)}#searchInput{font-size:16px}}
+@media(max-height:650px){#elevationLegend{margin-top:7px;padding-top:5px}#panel{padding:8px}#rightTools{bottom:calc(env(safe-area-inset-bottom) + 158px)}}
 </style></head>
 <body><div id="map"></div>
 <header id="header"><div class="top"><span class="badge">✳</span><div><h1>MAPP</h1><small>ATLAS DE EXPEDICIÓN · SERIE 01</small></div></div><div class="rule"></div></header>
+<div id="searchShell" role="search"><form id="searchForm" autocomplete="off"><input type="search" id="searchInput" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Buscar un lugar…" aria-label="Buscar lugares" aria-controls="searchResults" aria-expanded="false"/><button type="button" id="searchClear" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">×</button><button type="submit" id="searchSubmit" aria-label="Buscar">⌕</button></form><div id="searchResults" role="listbox" aria-label="Resultados de búsqueda" aria-live="polite"></div></div>
 <div id="demoTag">✦ EXPLORA · ANDES DE CHILE</div>
 <button id="compass" aria-label="Orientar norte" title="Orientar al norte"><strong>N</strong><svg viewBox="0 0 40 40"><path d="M20 4L25 20L20 36L15 20Z" fill="#a44b24" stroke="#4b452e" stroke-width=".7"/><path d="M20 36L20 4L15 20Z" fill="#e7c48c"/></svg></button>
 <div id="rightTools"><button class="tool" id="zoomIn" aria-label="Acercar">+</button><button class="tool" id="zoomOut" aria-label="Alejar">−</button><button class="tool" id="locate" aria-label="Mi ubicación" title="Mi ubicación">⌖</button></div>
-<div id="panel"><div class="panelHeading"><span>COLECCIÓN DE MAPAS</span><b>EDICIÓN 0.3</b></div><div id="choices"><button class="choice active" data-style="vintage"><span class="swatch"></span><span>Vintage</span></button><button class="choice" data-style="flat"><span class="swatch"></span><span>Ilustrado</span></button><button class="choice" data-style="topo"><span class="swatch"></span><span>Topográfico</span></button></div><div id="status"><span class="dot"></span><span id="message">Cargando cartografía real…</span></div></div>
+<div id="panel"><div class="panelHeading"><span>COLECCIÓN DE MAPAS</span><b>EDICIÓN 0.3.1</b></div><div id="choices"><button class="choice active" data-style="vintage"><span class="swatch"></span><span>Vintage</span></button><button class="choice" data-style="flat"><span class="swatch"></span><span>Ilustrado</span></button><button class="choice" data-style="topo"><span class="swatch"></span><span>Topográfico</span></button></div><div id="elevationLegend" aria-label="Colores por elevación"><span class="legendTitle">COTAS</span><div class="bands"><span class="elevBand" data-band="0"></span><span class="elevBand" data-band="1"></span><span class="elevBand" data-band="2"></span><span class="elevBand" data-band="3"></span></div><span class="legendLabels">BAJA → ALTA</span></div><div id="status"><span class="dot"></span><span id="message">Cargando cartografía real…</span></div></div>
 <script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>
 <script>
+/* MAP-0003: DEM hipsometría, buscador Photon y edificios sin extrusión. */
 const START=[-70.323,-33.348]; // ubicación de demostración; NO es GPS del usuario
 const styles={
- vintage:{background:'#eee0b9',water:'#a1c5c1',park:'#9da86e',wood:'#647b57',grass:'#d2c995',road:'#bd8e60',highway:'#9d5938',building:'#b9a17b',line:'#afa17a',text:'#6f452d',halo:'#f8eacc',contour:'#9d8b6d'},
- flat:{background:'#ede6c5',water:'#99b7bf',park:'#aabb7b',wood:'#4f7863',grass:'#d6d4a2',road:'#bb8f6c',highway:'#aa6145',building:'#d5c5a5',line:'#bdb18c',text:'#63472f',halo:'#f7edd5',contour:'#c5b591'},
- topo:{background:'#e1ddbe',water:'#a2bdb9',park:'#a7b392',wood:'#758b70',grass:'#cbccab',road:'#aa8e72',highway:'#8f654f',building:'#b4a88c',line:'#a6a086',text:'#565542',halo:'#ebe8cf',contour:'#928e79'}
+ vintage:{background:'#f1e7c9',water:'#90acb0',park:'#9da889',wood:'#82957f',grass:'#b2b99a',road:'#b07a57',highway:'#a36844',building:'#c5b8a1',line:'#ac8f75',text:'#704a32',halo:'#f4e8cc',elevation:['#eee4c7','#e3ddb8','#c9caa3','#a6b39a','#c1b8a0'],hill:'#78644d'},
+ flat:{background:'#f1e6c8',water:'#8faeb4',park:'#b8c2a1',wood:'#819a88',grass:'#c4c9ac',road:'#ae7f62',highway:'#ad6e4f',building:'#d7caba',line:'#ab9b7d',text:'#79553a',halo:'#f4e9cd',elevation:['#eee7cd','#dcd8b2','#c5c9a0','#a0b392','#bdb6a2'],hill:'#74745d'},
+ topo:{background:'#ebe1c6',water:'#86a3a8',park:'#aab59b',wood:'#829385',grass:'#c1c8af',road:'#a58168',highway:'#926b52',building:'#c7bfaf',line:'#938b78',text:'#585642',halo:'#f5edd8',elevation:['#e9e2cc','#dad9bc','#b7c3a8','#92a999','#c7c2ad'],hill:'#677260'}
 };
-let selected='vintage',map,marker,gps=false,customLayersReady=false;
+let selected='vintage',map,marker,searchMarker,gps=false,demReady=false,searchRequest=null,searchTimer=null,searchSeq=0,baseReady=false;
 const STARTUP_TIMEOUT=20000;
 const msg=(s,ok=false)=>{document.getElementById('message').textContent=s;document.getElementById('status').classList.toggle('ok',ok)};
 // Top-down 5-door Jimny-inspired marker; original SVG, independent of copyrighted vehicle artwork.
 const vehicle=`<div class="car" id="vehicle"><svg viewBox="0 0 58 86" xmlns="http://www.w3.org/2000/svg"><g stroke="#202520" stroke-linejoin="round"><rect x="8" y="5" width="42" height="76" rx="10" fill="#333a2f" stroke-width="2"/><rect x="4" y="14" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="46" y="14" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="4" y="53" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="46" y="53" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="10" y="5" width="38" height="75" rx="8" fill="#b85d27" stroke-width="1.7"/><path d="M13 19L45 19L42 32L16 32Z" fill="#627b7b" stroke-width="1.3"/><path d="M15 56L43 56L44 68L14 68Z" fill="#5b7170" stroke-width="1.3"/><path d="M14 34H44V53H14Z" fill="#a54c21" stroke-width="1.3"/><path d="M19 36V51M39 36V51M15 42H43" stroke="#44392b" stroke-width="1.4"/><rect x="14" y="9" width="30" height="6" rx="2" fill="#d48a43" stroke-width="1"/><path d="M14 73H44" stroke="#3d3026" stroke-width="3"/><circle cx="29" cy="75" r="8.2" fill="#1b2423" stroke-width="2"/><circle cx="29" cy="75" r="4" fill="#686c63" stroke-width="1"/></g><path d="M29 0L23 8H35Z" fill="#f4e5bf" stroke="#492f1c" stroke-width="1"/></svg></div>`;
-function setColor(id,prop,color){try{map.setPaintProperty(id,prop,color)}catch(e){}}
-function recolor(theme){selected=theme;const p=styles[theme];document.getElementById('map').className=theme==='flat'?'smooth':theme==='topo'?'ink':'';if(!map||!map.isStyleLoaded())return;
- for(const layer of map.getStyle().layers){let id=layer.id,kind=layer.type,name=id.toLowerCase();if(kind==='background')setColor(id,'background-color',p.background);
- if(kind==='fill'){let c=p.grass;if(/water|ocean|lake|river|wetland/.test(name))c=p.water;else if(/wood|forest|tree/.test(name))c=p.wood;else if(/park|protected|national/.test(name))c=p.park;else if(/building/.test(name))c=p.building;else if(/landcover|landuse|grass|meadow|scrub/.test(name))c=p.grass;else c=p.background;setColor(id,'fill-color',c)}
- if(kind==='line'){let c=p.line;if(/water|river|stream/.test(name))c=p.water;else if(/motorway|trunk|highway/.test(name))c=p.highway;else if(/road|street|path|track|rail/.test(name))c=p.road;else if(/contour/.test(name))c=p.contour;setColor(id,'line-color',c)}
- if(kind==='symbol'){setColor(id,'text-color',p.text);setColor(id,'text-halo-color',p.halo);setColor(id,'text-halo-width',theme==='flat'?1.5:1.05)}
+// Four colored elevation classes + pale rocky summits (all elevations in meters).
+// Step transitions are geographic bands, not repetitive texture stickers.
+const elevationRamp=(theme)=>{
+ const c=styles[theme].elevation;
+ return ['step',['elevation'],c[0],650,c[1],1150,c[2],1900,c[3],3200,c[4]];
+};
+function setPaint(id,prop,value){try{map.setPaintProperty(id,prop,value)}catch(e){console.warn('Pintura:',id,prop,e?.message)}}
+function setLayout(id,prop,value){try{map.setLayoutProperty(id,prop,value)}catch(e){console.warn('Layout:',id,prop,e?.message)}}
+function recolor(theme){
+ selected=theme;const p=styles[theme];document.getElementById('map').className=theme==='flat'?'smooth':theme==='topo'?'ink':'';
+ document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.dataset.style===theme));
+ document.querySelectorAll('.elevBand').forEach((el,i)=>el.style.backgroundColor=p.elevation[i]);
+ if(!map||!map.isStyleLoaded())return;
+ for(const layer of map.getStyle().layers){
+  const id=layer.id,kind=layer.type,name=id.toLowerCase();if(id.startsWith('mapp-'))continue;
+  if(kind==='fill-extrusion'){setLayout(id,'visibility','none');continue}
+  if(kind==='background')setPaint(id,'background-color',p.background);
+  if(kind==='fill'){
+   let c=p.background,opacity=.045;
+   if(/water|ocean|lake|river|wetland/.test(name)){c=p.water;opacity=.97}
+   else if(/building/.test(name)){c=p.building;opacity=.33}
+   else if(/wood|forest|tree/.test(name)){c=p.wood;opacity=.19}
+   else if(/park|protected|national|garden/.test(name)){c=p.park;opacity=.17}
+   else if(/grass|meadow|scrub|landcover|landuse|golf/.test(name)){c=p.grass;opacity=.11}
+   setPaint(id,'fill-color',c);setPaint(id,'fill-opacity',opacity);
+  }
+  if(kind==='line'){
+    let c=p.line,opacity=.70;
+    if(/water|river|stream/.test(name)){c=p.water;opacity=.89}
+    else if(/motorway|trunk|highway/.test(name)){c=p.highway;opacity=.78}
+    else if(/road|street|path|track|rail/.test(name)){c=p.road;opacity=.70}
+    setPaint(id,'line-color',c);setPaint(id,'line-opacity',opacity);
+  }
+  if(kind==='symbol'){
+    setPaint(id,'text-color',p.text);setPaint(id,'text-halo-color',p.halo);
+    setPaint(id,'text-halo-width',theme==='flat'?1.45:1.15);
+  }
  }
- if(customLayersReady){try{map.setPaintProperty('mapp-forest-texture','fill-pattern','mapp-forest-'+theme)}catch(e){}try{map.setPaintProperty('mapp-relief','hillshade-shadow-color',theme==='topo'?'#6f735e':'#82644a');map.setPaintProperty('mapp-relief','hillshade-exaggeration',theme==='flat'?0.24:theme==='topo'?0.43:0.55)}catch(e){}}
- document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.dataset.style===theme));msg('Terreno real · tintas y bosques ilustrados · GPS opcional',true);
-}
-
-// MAPP ART ENGINE v0.3 — geographic forest polygons remain tied to OSM.
-// Deterministic transparent tree and stipple tile; map repeat patterns are not static screenshots.
-function forestTile(theme){
- const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;
- const c=canvas.getContext('2d',{willReadFrequently:true});let seed=theme==='flat'?73:theme==='topo'?189:41;
- const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
- const ink=theme==='flat'?'#264a39':theme==='topo'?'#455b48':'#314f37';
- // Small halftone marks keep ink imperfect at any zoom.
- c.fillStyle=theme==='topo'?'#46584055':'#26483155';
- for(let i=0;i<165;i++){const x=rand()*128,y=rand()*128,r=.18+rand()*.75;c.beginPath();c.arc(x,y,r,0,2*Math.PI);c.fill()}
- for(let i=0;i<(theme==='topo'?13:19);i++){
-   const x=6+rand()*116,y=7+rand()*115,s=3+rand()*4;
-   c.globalAlpha=theme==='flat'?.42:theme==='topo'?.32:.6;c.strokeStyle=ink;c.fillStyle=ink;c.lineWidth=.55;
-   if(theme==='topo'){c.beginPath();c.moveTo(x-s,y+s);c.lineTo(x+s,y-s);c.stroke()}
-   else{c.beginPath();c.moveTo(x,y-s);c.lineTo(x-s*.74,y+s*.35);c.lineTo(x+s*.74,y+s*.35);c.closePath();c.fill();c.beginPath();c.moveTo(x,y-s*.22);c.lineTo(x-s*.96,y+s*.85);c.lineTo(x+s*.96,y+s*.85);c.closePath();c.fill();c.globalAlpha=.6;c.beginPath();c.moveTo(x,y+s*.7);c.lineTo(x,y+s*1.25);c.stroke()}
+ if(demReady){
+   setPaint('mapp-elevation-bands','color-relief-color',elevationRamp(theme));
+   setPaint('mapp-elevation-bands','color-relief-opacity',theme==='topo'?.96:.98);
+   setPaint('mapp-relief','hillshade-shadow-color',p.hill);
+   setPaint('mapp-relief','hillshade-exaggeration',theme==='topo'?.34:theme==='flat'?.21:.26);
  }
- c.globalAlpha=1;return c.getImageData(0,0,128,128);
-}
-function findForestLayer(){
- // Prefer the actual forest layer's source and filter to preserve geometry semantics.
- const ls=map.getStyle().layers;
- return ls.find(l=>l.type==='fill' && l.source && l['source-layer'] && /wood|forest/i.test(l.id)) ||
- ls.find(l=>l.type==='fill' && l.source && l['source-layer']==='landcover');
+ msg(demReady?'Cotas reales · vista 2D · GPS opcional':'Mapa real · cotas pendientes de cargar',true);
 }
 function installArtLayers(){
- if(customLayersReady)return;
- const ls=map.getStyle().layers;
- const vector=Object.entries(map.getStyle().sources).find(([k,v])=>v.type==='vector');
- for(const theme of ['vintage','flat','topo'])map.addImage('mapp-forest-'+theme,forestTile(theme));
- const forest=findForestLayer();
- const beforeRoad=ls.find(l=>l.type==='line'&&/road|street|highway/i.test(l.id))?.id || ls.find(l=>l.type==='symbol')?.id;
- if(forest){
-   const filter=/wood|forest/i.test(forest.id)?forest.filter:['any',['==',['get','class'],'wood'],['==',['get','class'],'forest'],['==',['get','subclass'],'wood'],['==',['get','subclass'],'forest']];
-   map.addLayer({id:'mapp-forest-texture',type:'fill',source:forest.source,'source-layer':forest['source-layer'],filter,paint:{'fill-pattern':'mapp-forest-'+selected,'fill-opacity':.69}},beforeRoad);
- }
- if(vector){
-  // Elevation shading remains 2D: map geometry stays north-up and without perspective.
-  try{
-   map.addSource('mapp-elevation',{type:'raster-dem',url:'https://tiles.mapterhorn.com/tilejson.json',encoding:'terrarium',tileSize:512,attribution:'© Mapterhorn'});
-   const below=forest?'mapp-forest-texture':beforeRoad;
-   map.addLayer({id:'mapp-relief',type:'hillshade',source:'mapp-elevation',paint:{'hillshade-method':'standard','hillshade-illumination-direction':315,'hillshade-shadow-color':'#82644a','hillshade-highlight-color':'#ffedce','hillshade-accent-color':'#947756','hillshade-exaggeration':.55}},below);
-  }catch(err){console.info('Relieve adicional no disponible:',err)}
- }
- customLayersReady=true;
+ if(demReady)return;
+ const layers=map.getStyle().layers;
+ // DEM tint sits above large flat land fills, but below water, buildings, roads and labels.
+ const firstWater=layers.find(l=>l.type==='fill'&&/water|ocean|lake/i.test(l.id));
+ const firstLine=layers.find(l=>l.type==='line');
+ const insertion=firstWater?.id||firstLine?.id||layers.find(l=>l.type==='symbol')?.id;
+ if(!map.getSource('mapp-elevation'))map.addSource('mapp-elevation',{
+   type:'raster-dem',url:'https://tiles.mapterhorn.com/tilejson.json',encoding:'terrarium',tileSize:512,attribution:'© Mapterhorn'
+ });
+ map.addLayer({id:'mapp-elevation-bands',type:'color-relief',source:'mapp-elevation',paint:{'color-relief-color':elevationRamp(selected),'color-relief-opacity':.98}},insertion);
+ map.addLayer({id:'mapp-relief',type:'hillshade',source:'mapp-elevation',paint:{
+   'hillshade-method':'standard','hillshade-illumination-direction':315,
+   'hillshade-shadow-color':'#78644d','hillshade-highlight-color':'#fff1d9',
+   'hillshade-accent-color':'#b6a789','hillshade-exaggeration':.26
+ }},insertion);
+ demReady=true;
 }
-
 async function start(){try{
- setTimeout(()=>{if(map&&!map.isStyleLoaded())msg('No se cargaron las teselas. Reintenta con conexión a internet.')},STARTUP_TIMEOUT);
- map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/liberty',center:START,zoom:12.3,bearing:0,pitch:0,attributionControl:false,maxPitch:0});
- const el=document.createElement('div');el.innerHTML=vehicle;marker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
- map.on('load',()=>{try{installArtLayers()}catch(e){console.warn('Texturas opcionales:',e)}recolor(selected);const a=document.createElement('div');a.style.cssText='position:absolute;bottom:0;left:0;z-index:3;font:9px system-ui;background:#f3e8ced8;padding:3px 7px;color:#705e45';a.textContent='© OpenStreetMap contributors · OpenFreeMap';document.getElementById('map').append(a)});
- map.on('error',e=>{console.warn('Capa externa:',e?.error?.message||e);if(!map.isStyleLoaded())msg('Algunas capas no cargaron. Comprueba tu conexión.')});
+ setTimeout(()=>{if(map&&!map.isStyleLoaded())msg('La cartografía no terminó de cargar. Verifica tu conexión.')},STARTUP_TIMEOUT);
+ map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/liberty',center:START,zoom:12.3,bearing:0,pitch:0,attributionControl:false,maxPitch:0,renderWorldCopies:false});
+ const el=document.createElement('div');el.innerHTML=vehicle;
+ marker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
+ map.on('load',()=>{
+  baseReady=true;
+  try{installArtLayers()}catch(err){console.warn('Elevación opcional no disponible:',err.message);msg('Mapa base disponible; elevación no cargada',true)}
+  recolor(selected);
+  const a=document.createElement('div');a.style.cssText='position:absolute;bottom:0;left:0;z-index:3;font:9px system-ui;background:#f3e8ced8;padding:3px 7px;color:#705e45';
+  a.textContent='© OpenStreetMap · OpenFreeMap · Mapterhorn';document.getElementById('map').append(a);
+ });
+ map.on('error',e=>{console.warn('Capa externa:',e?.error?.message||e);if(!baseReady)msg('Algunas capas no cargaron; comprueba tu conexión.')});
 }catch(e){msg('No se pudo iniciar MapLibre: '+e.message)}}
 document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>recolor(b.dataset.style)));
 document.getElementById('zoomIn').onclick=()=>map&&map.zoomIn();document.getElementById('zoomOut').onclick=()=>map&&map.zoomOut();document.getElementById('compass').onclick=()=>map&&map.easeTo({bearing:0,pitch:0});
+
+// Place search — Photon (OpenStreetMap). Only query on >=3 characters,
+// debounce 750 ms; abort superseded requests, avoid high-volume traffic.
+const searchInput=document.getElementById('searchInput'),searchResults=document.getElementById('searchResults');
+const searchCache=new Map();
+function searchShow(show){searchResults.classList.toggle('open',show);searchInput.setAttribute('aria-expanded',String(show))}
+function searchMessage(message){searchResults.replaceChildren();const row=document.createElement('div');row.className='searchInfo';row.textContent=message;searchResults.append(row);searchShow(true)}
+function searchReset(){clearTimeout(searchTimer);searchSeq++;searchRequest?.abort();searchRequest=null;searchResults.replaceChildren();searchShow(false)}
+function searchLabel(feature){
+ const a=feature.properties||{};const label=a.name||a.street||a.city||a.county||'Lugar sin nombre';
+ const parts=[a.street&&a.street!==label?a.street:null,a.city&&a.city!==label?a.city:null,a.state,a.country].filter(Boolean);
+ return {label,description:parts.join(' · ')};
+}
+function showSearchResult(features){
+ searchResults.replaceChildren();
+ if(!features.length){searchMessage('Sin resultados. Prueba otra localidad o dirección.');return}
+ features.forEach(feature=>{
+  const coords=feature?.geometry?.coordinates;
+  if(!Array.isArray(coords)||coords.length<2||!coords.slice(0,2).every(Number.isFinite))return;
+  const names=searchLabel(feature);const button=document.createElement('button');button.type='button';button.className='searchRow';button.setAttribute('role','option');button.textContent=names.label;
+  const detail=document.createElement('small');detail.textContent=names.description||'Ubicación cartográfica';button.append(detail);
+  button.onclick=()=>{
+   const place=[coords[0],coords[1]];if(!map)return;
+   if(searchMarker)searchMarker.remove();
+   const pin=document.createElement('div');pin.setAttribute('aria-label','Lugar seleccionado');pin.style.cssText='width:18px;height:18px;background:#a85b35;border:3px solid #f3e5c6;border-radius:50%;box-shadow:0 0 0 2px #6a4934,0 3px 10px #372a1a80';
+   searchMarker=new maplibregl.Marker({element:pin,anchor:'center'}).setLngLat(place).addTo(map);
+   map.flyTo({center:place,zoom:Math.max(map.getZoom(),13),essential:true});
+   searchInput.value=names.label;searchShow(false);document.getElementById('demoTag').textContent='✦ '+names.label.toLocaleUpperCase('es');
+   msg('Lugar encontrado · '+names.label,true);
+  };searchResults.append(button);
+ });
+ searchShow(!!searchResults.children.length);
+}
+async function searchPlaces(){
+ const term=searchInput.value.trim();if(term.length<3){searchReset();if(term)searchMessage('Escribe al menos 3 caracteres.');return}
+ const id=++searchSeq;searchRequest?.abort();searchRequest=new AbortController();
+ if(searchCache.has(term.toLocaleLowerCase('es'))){showSearchResult(searchCache.get(term.toLocaleLowerCase('es')));return}
+ searchMessage('Buscando lugares…');
+ try{
+  const center=map?.getCenter?.()||{lat:START[1],lng:START[0]};
+  const params=new URLSearchParams({q:term,limit:'5',lang:'es',lat:String(center.lat),lon:String(center.lng)});
+  const response=await fetch('https://photon.komoot.io/api/?'+params.toString(),{signal:searchRequest.signal,headers:{Accept:'application/json'}});
+  if(!response.ok)throw Error('Servicio no disponible ('+response.status+')');
+  const data=await response.json();if(id!==searchSeq)return;
+  const features=Array.isArray(data.features)?data.features:[];
+  searchCache.set(term.toLocaleLowerCase('es'),features);if(searchCache.size>30)searchCache.delete(searchCache.keys().next().value);
+  showSearchResult(features);
+ }catch(err){if(err.name!=='AbortError'&&id===searchSeq)searchMessage('No fue posible buscar. Reintenta más tarde.')}finally{if(id===searchSeq)searchRequest=null}
+}
+searchInput.addEventListener('input',()=>{
+ clearTimeout(searchTimer);searchSeq++;searchRequest?.abort();searchRequest=null;
+ const value=searchInput.value.trim();if(value.length<3){searchShow(false);return}
+ searchTimer=setTimeout(searchPlaces,750);
+});
+document.getElementById('searchForm').addEventListener('submit',e=>{e.preventDefault();clearTimeout(searchTimer);searchPlaces();searchInput.blur()});
+document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';searchReset();searchInput.focus()});
+searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchReset();searchInput.blur()}});
+document.addEventListener('pointerdown',e=>{if(!document.getElementById('searchShell').contains(e.target))searchShow(false)});
 document.getElementById('locate').onclick=()=>{if(!navigator.geolocation){msg('Este navegador no admite GPS.');return}msg('Solicitando autorización de ubicación…');navigator.geolocation.getCurrentPosition(pos=>{gps=true;const ll=[pos.coords.longitude,pos.coords.latitude];marker.setLngLat(ll);map.flyTo({center:ll,zoom:15});document.getElementById('demoTag').textContent='MI UBICACIÓN · GPS';document.getElementById('vehicle').classList.add('pulse');msg('Ubicación GPS actualizada · precisión ±'+Math.round(pos.coords.accuracy)+' m',true)},err=>msg('GPS no disponible ('+err.message+'). Permanece la ubicación de demostración.'),{enableHighAccuracy:true,timeout:16000,maximumAge:0})};
 start();
 </script></body></html>
