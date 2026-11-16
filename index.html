@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/><meta name="theme-color" content="#e6d5ae"/><title>Mapp · Overland Vintage</title>
+<html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/><meta name="theme-color" content="#eadbbe"/><title>Mapp · Atlas de expedición</title>
 <link href="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.css" rel="stylesheet"/>
 <style>
 :root{--ink:#413b29;--burn:#a44b24;--paper:#f3e8ce;--olive:#647047}*{box-sizing:border-box}html,body,#map{margin:0;height:100%;width:100%;overflow:hidden}body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:var(--paper)}#map{position:absolute;inset:0}#map:after{content:"";pointer-events:none;position:absolute;inset:0;z-index:2;opacity:.31;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.19'/%3E%3C/svg%3E");mix-blend-mode:multiply}
@@ -12,22 +12,43 @@
 #demoTag{position:absolute;z-index:3;left:15px;top:calc(env(safe-area-inset-top) + 98px);background:#f0e2bfdb;border:1px solid #aa9670;border-radius:7px;padding:7px 10px;font:10px system-ui,sans-serif;letter-spacing:.05em;color:#69583c;pointer-events:none}
 .car{width:58px;height:86px;filter:drop-shadow(0 3px 4px #171b1490)}.car svg{width:58px;height:86px;display:block}.car.pulse:before{content:"";position:absolute;width:105px;height:105px;left:-24px;top:-9px;border-radius:50%;border:1px solid #bd5d3499;background:#be6c2d15;z-index:-1}
 @media(max-height:640px){#panel{padding:10px}#panel .panelHeading{margin-bottom:7px}#rightTools{bottom:calc(env(safe-area-inset-bottom) + 159px)}#header h1{font-size:20px}}
+
+/* ART DIRECTOR PASS v0.3 — vintage expedition paper, graphic woodcut forest marks */
+:root{--ink:#453b2d;--burn:#a35332;--paper:#eadbbe;--olive:#5c7050}
+#map:after{opacity:.22;filter:sepia(.22)}
+#header{padding:calc(env(safe-area-inset-top) + 12px) 17px 22px;background:linear-gradient(180deg,#eadcbeec 0%,#eee0c6cf 68%,transparent 100%)}
+#header h1{font-family:Georgia,serif;font-size:29px;font-weight:700;letter-spacing:.18em;color:#453e2c;text-shadow:1px 1px #efe5cf}
+#header small{font-size:9px;letter-spacing:.24em;color:#986044}
+#header .rule{height:2px;background:linear-gradient(90deg,#a15332,#b99766 55%,transparent);opacity:.7;margin-top:12px}
+#demoTag{top:calc(env(safe-area-inset-top) + 105px);background:#eee0c7bb;box-shadow:0 3px 12px #42351c1e;padding:7px 10px;letter-spacing:.12em;font:9px Georgia,serif;border:1px solid #a3896366;border-radius:2px}
+#compass{top:calc(env(safe-area-inset-top) + 106px);width:51px;height:51px;border:1.5px solid #816849;background:#eee2cbd6;box-shadow:1px 4px 10px #4235212c;border-radius:50%}#compass svg{height:37px;width:37px}
+#panel{background:#f1e7d5e9;border:1px solid #977b5875;border-radius:5px;box-shadow:0 4px 19px #4233214b;padding:12px 12px 10px;backdrop-filter:blur(8px)}
+#panel:before{content:"";position:absolute;pointer-events:none;inset:4px;border:1px solid #a991681f}
+#panel .panelHeading{font-family:Georgia,serif;font-size:10px;letter-spacing:.18em;color:#965a39;margin:0 3px 10px}
+#panel .panelHeading b{font:9px system-ui,sans-serif;letter-spacing:.14em;color:#887455}
+#choices{gap:7px}.choice{padding:8px 3px;background:#f3e8d3;border:1px solid #b8a07c;border-radius:4px;gap:5px;box-shadow:none}.choice.active{border:2px solid #b1663e;background:#f7edda;padding:7px 2px}
+.choice span:last-child{font-family:Georgia,serif;font-size:12px;letter-spacing:.045em;font-weight:600}
+.swatch{height:19px;border-radius:2px;filter:sepia(.26) saturate(.8)}#status{font:10px/1.3 system-ui,sans-serif;margin-top:10px;padding-top:8px;opacity:.84}
+.tool{width:45px;height:45px;border-radius:5px;background:#eee0c6e8;border-color:#977b5f;font-weight:500;box-shadow:0 3px 9px #2d261b29}
+#rightTools{bottom:calc(env(safe-area-inset-bottom) + 163px)}
+@media(max-height:670px){#rightTools{bottom:calc(env(safe-area-inset-bottom) + 153px)}#panel{padding:9px}#panel .panelHeading{margin-bottom:6px}}
 </style></head>
 <body><div id="map"></div>
-<header id="header"><div class="top"><span class="badge">✦</span><div><h1>MAPP</h1><small>OVERLAND · EXPLORATION ATLAS</small></div></div><div class="rule"></div></header>
-<div id="demoTag">CORDILLERA DE LOS ANDES · CHILE</div>
+<header id="header"><div class="top"><span class="badge">✳</span><div><h1>MAPP</h1><small>ATLAS DE EXPEDICIÓN · SERIE 01</small></div></div><div class="rule"></div></header>
+<div id="demoTag">✦ EXPLORA · ANDES DE CHILE</div>
 <button id="compass" aria-label="Orientar norte" title="Orientar al norte"><strong>N</strong><svg viewBox="0 0 40 40"><path d="M20 4L25 20L20 36L15 20Z" fill="#a44b24" stroke="#4b452e" stroke-width=".7"/><path d="M20 36L20 4L15 20Z" fill="#e7c48c"/></svg></button>
 <div id="rightTools"><button class="tool" id="zoomIn" aria-label="Acercar">+</button><button class="tool" id="zoomOut" aria-label="Alejar">−</button><button class="tool" id="locate" aria-label="Mi ubicación" title="Mi ubicación">⌖</button></div>
-<div id="panel"><div class="panelHeading"><span>ESTILO DEL MAPA</span><b>PROTOTIPO 0.2</b></div><div id="choices"><button class="choice active" data-style="vintage"><span class="swatch"></span><span>Vintage</span></button><button class="choice" data-style="flat"><span class="swatch"></span><span>Ilustrado</span></button><button class="choice" data-style="topo"><span class="swatch"></span><span>Topográfico</span></button></div><div id="status"><span class="dot"></span><span id="message">Cargando cartografía real…</span></div></div>
+<div id="panel"><div class="panelHeading"><span>COLECCIÓN DE MAPAS</span><b>EDICIÓN 0.3</b></div><div id="choices"><button class="choice active" data-style="vintage"><span class="swatch"></span><span>Vintage</span></button><button class="choice" data-style="flat"><span class="swatch"></span><span>Ilustrado</span></button><button class="choice" data-style="topo"><span class="swatch"></span><span>Topográfico</span></button></div><div id="status"><span class="dot"></span><span id="message">Cargando cartografía real…</span></div></div>
 <script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>
 <script>
 const START=[-70.323,-33.348]; // ubicación de demostración; NO es GPS del usuario
 const styles={
- vintage:{background:'#e9dcad',water:'#a9c9c5',park:'#b3b678',wood:'#849454',grass:'#c8c68c',road:'#d0a46e',highway:'#ae754b',building:'#baad88',line:'#aca478',text:'#71512e',halo:'#f7eac5',contour:'#b2a679'},
- flat:{background:'#f2eed4',water:'#aaccc9',park:'#c7d18e',wood:'#9caa6d',grass:'#e1dda2',road:'#bd8b5f',highway:'#aa7147',building:'#d6c8a4',line:'#c7c399',text:'#955b33',halo:'#f7f1dc',contour:'#d3cb93'},
- topo:{background:'#e0dfc3',water:'#9fbbb9',park:'#b4bb91',wood:'#8d9e7a',grass:'#ced2a9',road:'#b49b75',highway:'#9a704f',building:'#b1a993',line:'#9d9b80',text:'#5b5640',halo:'#e8e8d2',contour:'#9ba180'}
+ vintage:{background:'#eee0b9',water:'#a1c5c1',park:'#9da86e',wood:'#647b57',grass:'#d2c995',road:'#bd8e60',highway:'#9d5938',building:'#b9a17b',line:'#afa17a',text:'#6f452d',halo:'#f8eacc',contour:'#9d8b6d'},
+ flat:{background:'#ede6c5',water:'#99b7bf',park:'#aabb7b',wood:'#4f7863',grass:'#d6d4a2',road:'#bb8f6c',highway:'#aa6145',building:'#d5c5a5',line:'#bdb18c',text:'#63472f',halo:'#f7edd5',contour:'#c5b591'},
+ topo:{background:'#e1ddbe',water:'#a2bdb9',park:'#a7b392',wood:'#758b70',grass:'#cbccab',road:'#aa8e72',highway:'#8f654f',building:'#b4a88c',line:'#a6a086',text:'#565542',halo:'#ebe8cf',contour:'#928e79'}
 };
-let selected='vintage',map,marker,gps=false;
+let selected='vintage',map,marker,gps=false,customLayersReady=false;
+const STARTUP_TIMEOUT=20000;
 const msg=(s,ok=false)=>{document.getElementById('message').textContent=s;document.getElementById('status').classList.toggle('ok',ok)};
 // Top-down 5-door Jimny-inspired marker; original SVG, independent of copyrighted vehicle artwork.
 const vehicle=`<div class="car" id="vehicle"><svg viewBox="0 0 58 86" xmlns="http://www.w3.org/2000/svg"><g stroke="#202520" stroke-linejoin="round"><rect x="8" y="5" width="42" height="76" rx="10" fill="#333a2f" stroke-width="2"/><rect x="4" y="14" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="46" y="14" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="4" y="53" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="46" y="53" width="8" height="18" rx="3" fill="#171c19" stroke-width="2"/><rect x="10" y="5" width="38" height="75" rx="8" fill="#b85d27" stroke-width="1.7"/><path d="M13 19L45 19L42 32L16 32Z" fill="#627b7b" stroke-width="1.3"/><path d="M15 56L43 56L44 68L14 68Z" fill="#5b7170" stroke-width="1.3"/><path d="M14 34H44V53H14Z" fill="#a54c21" stroke-width="1.3"/><path d="M19 36V51M39 36V51M15 42H43" stroke="#44392b" stroke-width="1.4"/><rect x="14" y="9" width="30" height="6" rx="2" fill="#d48a43" stroke-width="1"/><path d="M14 73H44" stroke="#3d3026" stroke-width="3"/><circle cx="29" cy="75" r="8.2" fill="#1b2423" stroke-width="2"/><circle cx="29" cy="75" r="4" fill="#686c63" stroke-width="1"/></g><path d="M29 0L23 8H35Z" fill="#f4e5bf" stroke="#492f1c" stroke-width="1"/></svg></div>`;
@@ -38,13 +59,62 @@ function recolor(theme){selected=theme;const p=styles[theme];document.getElement
  if(kind==='line'){let c=p.line;if(/water|river|stream/.test(name))c=p.water;else if(/motorway|trunk|highway/.test(name))c=p.highway;else if(/road|street|path|track|rail/.test(name))c=p.road;else if(/contour/.test(name))c=p.contour;setColor(id,'line-color',c)}
  if(kind==='symbol'){setColor(id,'text-color',p.text);setColor(id,'text-halo-color',p.halo);setColor(id,'text-halo-width',theme==='flat'?1.5:1.05)}
  }
- document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.dataset.style===theme));msg('Mapa real · vista vertical · marcador Jimny de demostración',true);
+ if(customLayersReady){try{map.setPaintProperty('mapp-forest-texture','fill-pattern','mapp-forest-'+theme)}catch(e){}try{map.setPaintProperty('mapp-relief','hillshade-shadow-color',theme==='topo'?'#6f735e':'#82644a');map.setPaintProperty('mapp-relief','hillshade-exaggeration',theme==='flat'?0.24:theme==='topo'?0.43:0.55)}catch(e){}}
+ document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.dataset.style===theme));msg('Terreno real · tintas y bosques ilustrados · GPS opcional',true);
 }
+
+// MAPP ART ENGINE v0.3 — geographic forest polygons remain tied to OSM.
+// Deterministic transparent tree and stipple tile; map repeat patterns are not static screenshots.
+function forestTile(theme){
+ const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;
+ const c=canvas.getContext('2d',{willReadFrequently:true});let seed=theme==='flat'?73:theme==='topo'?189:41;
+ const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+ const ink=theme==='flat'?'#264a39':theme==='topo'?'#455b48':'#314f37';
+ // Small halftone marks keep ink imperfect at any zoom.
+ c.fillStyle=theme==='topo'?'#46584055':'#26483155';
+ for(let i=0;i<165;i++){const x=rand()*128,y=rand()*128,r=.18+rand()*.75;c.beginPath();c.arc(x,y,r,0,2*Math.PI);c.fill()}
+ for(let i=0;i<(theme==='topo'?13:19);i++){
+   const x=6+rand()*116,y=7+rand()*115,s=3+rand()*4;
+   c.globalAlpha=theme==='flat'?.42:theme==='topo'?.32:.6;c.strokeStyle=ink;c.fillStyle=ink;c.lineWidth=.55;
+   if(theme==='topo'){c.beginPath();c.moveTo(x-s,y+s);c.lineTo(x+s,y-s);c.stroke()}
+   else{c.beginPath();c.moveTo(x,y-s);c.lineTo(x-s*.74,y+s*.35);c.lineTo(x+s*.74,y+s*.35);c.closePath();c.fill();c.beginPath();c.moveTo(x,y-s*.22);c.lineTo(x-s*.96,y+s*.85);c.lineTo(x+s*.96,y+s*.85);c.closePath();c.fill();c.globalAlpha=.6;c.beginPath();c.moveTo(x,y+s*.7);c.lineTo(x,y+s*1.25);c.stroke()}
+ }
+ c.globalAlpha=1;return c.getImageData(0,0,128,128);
+}
+function findForestLayer(){
+ // Prefer the actual forest layer's source and filter to preserve geometry semantics.
+ const ls=map.getStyle().layers;
+ return ls.find(l=>l.type==='fill' && l.source && l['source-layer'] && /wood|forest/i.test(l.id)) ||
+ ls.find(l=>l.type==='fill' && l.source && l['source-layer']==='landcover');
+}
+function installArtLayers(){
+ if(customLayersReady)return;
+ const ls=map.getStyle().layers;
+ const vector=Object.entries(map.getStyle().sources).find(([k,v])=>v.type==='vector');
+ for(const theme of ['vintage','flat','topo'])map.addImage('mapp-forest-'+theme,forestTile(theme));
+ const forest=findForestLayer();
+ const beforeRoad=ls.find(l=>l.type==='line'&&/road|street|highway/i.test(l.id))?.id || ls.find(l=>l.type==='symbol')?.id;
+ if(forest){
+   const filter=/wood|forest/i.test(forest.id)?forest.filter:['any',['==',['get','class'],'wood'],['==',['get','class'],'forest'],['==',['get','subclass'],'wood'],['==',['get','subclass'],'forest']];
+   map.addLayer({id:'mapp-forest-texture',type:'fill',source:forest.source,'source-layer':forest['source-layer'],filter,paint:{'fill-pattern':'mapp-forest-'+selected,'fill-opacity':.69}},beforeRoad);
+ }
+ if(vector){
+  // Elevation shading remains 2D: map geometry stays north-up and without perspective.
+  try{
+   map.addSource('mapp-elevation',{type:'raster-dem',url:'https://tiles.mapterhorn.com/tilejson.json',encoding:'terrarium',tileSize:512,attribution:'© Mapterhorn'});
+   const below=forest?.id || beforeRoad;
+   map.addLayer({id:'mapp-relief',type:'hillshade',source:'mapp-elevation',paint:{'hillshade-method':'standard','hillshade-illumination-direction':315,'hillshade-shadow-color':'#82644a','hillshade-highlight-color':'#ffedce','hillshade-accent-color':'#947756','hillshade-exaggeration':.55}},below);
+  }catch(err){console.info('Relieve adicional no disponible:',err)}
+ }
+ customLayersReady=true;
+}
+
 async function start(){try{
+ setTimeout(()=>{if(map&&!map.isStyleLoaded())msg('No se cargaron las teselas. Reintenta con conexión a internet.')},STARTUP_TIMEOUT);
  map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/liberty',center:START,zoom:12.3,bearing:0,pitch:0,attributionControl:false,maxPitch:0});
  const el=document.createElement('div');el.innerHTML=vehicle;marker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
- map.on('load',()=>{recolor(selected);const a=document.createElement('div');a.style.cssText='position:absolute;bottom:0;left:0;z-index:3;font:9px system-ui;background:#f3e8ced8;padding:3px 7px;color:#705e45';a.textContent='© OpenStreetMap contributors · OpenFreeMap';document.getElementById('map').append(a)});
- map.on('error',e=>{if(!map.loaded())msg('No se pudo cargar el mapa. Comprueba tu conexión.')});
+ map.on('load',()=>{try{installArtLayers()}catch(e){console.warn('Texturas opcionales:',e)}recolor(selected);const a=document.createElement('div');a.style.cssText='position:absolute;bottom:0;left:0;z-index:3;font:9px system-ui;background:#f3e8ced8;padding:3px 7px;color:#705e45';a.textContent='© OpenStreetMap contributors · OpenFreeMap';document.getElementById('map').append(a)});
+ map.on('error',e=>{console.warn('Capa externa:',e?.error?.message||e);if(!map.isStyleLoaded())msg('Algunas capas no cargaron. Comprueba tu conexión.')});
 }catch(e){msg('No se pudo iniciar MapLibre: '+e.message)}}
 document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>recolor(b.dataset.style)));
 document.getElementById('zoomIn').onclick=()=>map&&map.zoomIn();document.getElementById('zoomOut').onclick=()=>map&&map.zoomOut();document.getElementById('compass').onclick=()=>map&&map.easeTo({bearing:0,pitch:0});

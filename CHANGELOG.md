@@ -1,4 +1,6 @@
-# Changelog
-
-## [Unreleased]
-- Propuesta inicial de gobierno de agentes, documentación y CI/CD (sin aplicación ni despliegue).
+# CHANGELOG
+## [Unreleased] — v0.3 artística (MAP-0002)
+- Bosques con estampados Canvas sobre polígonos geográficos y selector dinámico.
+- Relieve hillshade 2D con DEM opcional.
+- Ajustes de papel, tipografía, UI y fallback de carga.
+- Pendiente validación real Safari y aprobación de diseño.
