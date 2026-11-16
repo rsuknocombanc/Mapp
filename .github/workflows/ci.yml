@@ -1,0 +1,23 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify HTML and documentation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          t=Path('index.html').read_text()
+          for s in ['maplibregl.Map','openfreemap.org','geolocation','Vintage','Ilustrado','Topográfico']:
+              assert s in t, f'Missing {s}'
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0001.md']:
+              assert Path(p).is_file(), f'Missing {p}'
+          print('Static validation OK')
+          PY
