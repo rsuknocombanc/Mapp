@@ -102,7 +102,7 @@ function installArtLayers(){
   // Elevation shading remains 2D: map geometry stays north-up and without perspective.
   try{
    map.addSource('mapp-elevation',{type:'raster-dem',url:'https://tiles.mapterhorn.com/tilejson.json',encoding:'terrarium',tileSize:512,attribution:'© Mapterhorn'});
-   const below=forest?.id || beforeRoad;
+   const below=forest?'mapp-forest-texture':beforeRoad;
    map.addLayer({id:'mapp-relief',type:'hillshade',source:'mapp-elevation',paint:{'hillshade-method':'standard','hillshade-illumination-direction':315,'hillshade-shadow-color':'#82644a','hillshade-highlight-color':'#ffedce','hillshade-accent-color':'#947756','hillshade-exaggeration':.55}},below);
   }catch(err){console.info('Relieve adicional no disponible:',err)}
  }
