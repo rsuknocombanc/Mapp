@@ -1,5 +1,5 @@
 # PLAN DE PRUEBAS MAP-0012 — Limpieza cartográfica
-Fecha: 2026-11-17. Estado: PLAN APROBADO CON D1; pruebas SIN EJECUTAR, desarrollo NO AUTORIZADO.
+Fecha: 2026-11-17. Estado: PLAN D1 APROBADO; implementación v0.8.0 autorizada; CI automatizado previsto y UAT Edge/Safari pendiente.
 | ID | Prueba | Resultado esperado |
 | --- | --- | --- |
 | P01 | `water.class=swimming_pool` en fuente real | 0 objetos renderizados en water y 4 overlays |
@@ -23,3 +23,6 @@ Fecha: 2026-11-17. Estado: PLAN APROBADO CON D1; pruebas SIN EJECUTAR, desarroll
 | P19 | Superposición frontera comunal/carretera/ruta | La línea comunal no tapa ruta seleccionada ni se confunde con frontera internacional |
 
 Sin resultados de estas pruebas se mantiene estado PENDIENTE UAT. Nunca confundir validación de estilo con render real.
+
+## Evidencia y limitaciones
+Se ejecutarán pruebas unitarias de filtros y capas, restauración/idempotencia y validación oficial MapLibre. Una simulación de provider no certifica cobertura real de límites comunales, ni ausencia de rectángulos azules por datos incorrectamente clasificados, ni FPS en Safari. Para P16/P17, sobre una frontera comunal real usar diagnóstico `window.MappLayerPolicy.inspectCommuneCoverage(map)` después de cargar tiles; `not-observed-in-current-tiles` NO demuestra ausencia global. P01–P19 requieren UAT antes de cerrar.

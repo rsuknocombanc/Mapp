@@ -144,7 +144,7 @@ function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
   try{
    map.addSource(SOURCE,{type:'geojson',data:{type:'FeatureCollection',features:[]}});
    const firstRoad=map.getStyle().layers.find(l=>l.type==='line'&&!l.id.startsWith('mapp-')&&/road|motorway|trunk|primary/.test(l.id.toLowerCase()))?.id;
-   const before=firstRoad||map.getStyle().layers.find(l=>l.type==='symbol'&&!l.id.startsWith('mapp-'))?.id;
+   const before=map.getLayer('mapp-commune-boundary')?'mapp-commune-boundary':firstRoad||map.getStyle().layers.find(l=>l.type==='symbol'&&!l.id.startsWith('mapp-'))?.id;
    map.addLayer({id:LAYER,type:'symbol',source:SOURCE,minzoom:6,layout:{
     'icon-image':['get','sprite'],'icon-anchor':'bottom',
     'icon-size':treeIconSizeExpression(),

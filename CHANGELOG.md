@@ -55,3 +55,10 @@
 - Vista cercana: pinos de mayor tamaño y composición expresiva.
 - Bordes de bosque, pasto y parques suavizados con pigmento difuso; papel, agua, rutas y buscador conservados.
 - UAT visual y rendimiento real pendientes.
+
+## [0.8.0] — MAP-0012, simplificación cartográfica D1
+- Piscinas privadas filtradas en agua base y cuatro pasadas pictóricas; `pond` se muestra desde z14.
+- Ocultación de superficies urbanas/canchas/edificios/POI/ferrocarriles, etiquetas y caminos jerarquizados por zoom.
+- Huellas `track` y senderos `path` conservados; pasajes urbanos `pedestrian` ocultos siempre; vías de servicio diferidas a z15.
+- Nueva capa de límites comunales `admin_level=8` desde z11 si existe geometría en tiles de OpenFreeMap.
+- Módulo declarativo con diagnóstico, rollback, tests Node y validador oficial de MapLibre; UAT Edge/Safari pendiente.

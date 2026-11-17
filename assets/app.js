@@ -2,7 +2,7 @@
  * MAP-0004/5/6/7. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
-const APP_VERSION='0.7.0';
+const APP_VERSION='0.8.0';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
 const $=id=>document.getElementById(id);
 // Restrained but saturated palette from the user's hand-painted atlas reference.
@@ -147,6 +147,14 @@ async function start(){
   carMarker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
   map.on('load',()=>{
     baseReady=true;artStyle(selected);addArtWashes();
+    if(window.MappLayerPolicy){
+      try{
+        const review=window.MappLayerPolicy.validatePolicyAgainstStyle(map.getStyle());
+        if(!review.compatible)console.warn('MAP-0012: capas críticas no disponibles',review.missingCritical);
+        const summary=window.MappLayerPolicy.applyPolicy(map);
+        if(summary.warnings.length)console.warn('MAP-0012: advertencias de capas',summary.warnings);
+      }catch(err){console.warn('MAP-0012: política cartográfica incompleta',err?.message||err)}
+    }
     illustratedForest=window.MappForest?.install(map,{maxDesktop:600,maxMobile:320,onStats:count=>{visibleTrees=count;updateBuildStamp()}})||null;
     updateBuildStamp();
     addRouteLayers();refreshRoute();

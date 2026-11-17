@@ -13,9 +13,9 @@ p=Parser();p.feed(h)
 for key in ['map','searchInput','searchResults','searchForm','tabStyle','tabRoute','stylePane','routePane','routeCalculate','routeClear','routeUndo','routeFromGps','routeAddStop','modeAutomatic','modeManual','routeSummary','routeHelp','statusText','locate','mapAreaLabel','buildStamp','buildVersion','buildContext']:
  assert key in p.ids,key
 assert 'styleChoice' not in h,'Three incompatible style buttons must be removed'
-for t in ['Acuarela · Bosque · Tinta','Atlas ilustrado','EDICIÓN 0.7.0']:
+for t in ['Acuarela · Bosque · Tinta','Atlas ilustrado','EDICIÓN 0.8.0']:
  assert t in h,t
-for t in ["const APP_VERSION='0.7.0'",'mapp-park-wash','mapp-forest-wash','mapp-water-wash','mapp-route-dashed','photon.komoot.io/api/','router.project-osrm.org/route/v1/driving/','AbortController','getCurrentPosition','modeRoute','autoRoute','addWaypoint']:
+for t in ["const APP_VERSION='0.8.0'",'mapp-park-wash','mapp-forest-wash','mapp-water-wash','mapp-route-dashed','photon.komoot.io/api/','router.project-osrm.org/route/v1/driving/','AbortController','getCurrentPosition','modeRoute','autoRoute','addWaypoint']:
  assert t in a,t
 for t in ['mapp-tree-symbols','landcover','landuse','park','new Image()','getImageData','maxDesktop=600','maxMobile=320','sprite:`mapp-pine-${variant}-${tone}`','ATLAS']:
  assert t in f+a,t
@@ -28,8 +28,16 @@ print('Mapp v0.6 single-art atlas, watercolor sprites, routing and UI contract O
 assert 'treeIconSizeExpression' in f
 assert "'icon-size':treeIconSizeExpression()" in f
 assert "'icon-size':['*',['get','scale'],['interpolate'" not in f
-assert '<strong id="buildVersion">v0.7.0</strong>' in h
+assert '<strong id="buildVersion">v0.8.0</strong>' in h
 
 for watercolor in ['mapp-forest-bleed','mapp-grass-bleed','mapp-park-bleed']:
  assert watercolor in a
 assert 'canopyCluster' in f and 'forestLevel' in f
+
+p=Path('assets/layer-policy.js').read_text()
+assert 'src="./assets/layer-policy.js" defer' in h
+assert h.index('assets/layer-policy.js') < h.index('assets/app.js')
+for key in ['applyPolicy','restorePolicy','verifyPolicy','mapp-commune-boundary','swimming_pool','road_service_track','road_path_pedestrian']:
+ assert key in p,key
+assert 'MappLayerPolicy.applyPolicy(map)' in a
+print('MAP-0012 approved D1 visibility layer contract OK')

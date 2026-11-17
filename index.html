@@ -17,7 +17,7 @@
   <div class="headerRule"></div>
 </header>
 <aside id="buildStamp" aria-label="Versión y diagnóstico del mapa">
-  <strong id="buildVersion">v0.7.0</strong>
+  <strong id="buildVersion">v0.8.0</strong>
   <small id="buildContext">ACUARELA · Z— · 0 PINOS</small>
 </aside>
 <div id="searchShell" role="search">
@@ -36,7 +36,7 @@
   <div class="dockTabs" role="tablist" aria-label="Panel principal">
     <button id="tabStyle" class="dockTab active" role="tab" aria-selected="true" aria-controls="stylePane">ARTE</button>
     <button id="tabRoute" class="dockTab" role="tab" aria-selected="false" aria-controls="routePane">TRAZAR RUTA</button>
-    <small>EDICIÓN 0.7.0</small>
+    <small>EDICIÓN 0.8.0</small>
   </div>
   <div id="stylePane" role="tabpanel" aria-labelledby="tabStyle">
     <div class="artDefinition"><span class="artMiniature" aria-hidden="true"></span><div><strong>Atlas ilustrado</strong><small>Acuarela · Bosque · Tinta</small></div></div>
@@ -61,6 +61,7 @@
   <div class="status"><span class="statusDot" id="statusDot"></span><span id="statusText" role="status">Cargando mapa…</span><span id="routeLegend" hidden>━ ╌ RUTA</span></div>
 </section>
 <script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>
+<script src="./assets/layer-policy.js" defer></script>
 <script src="./assets/forest.js" defer></script>
 <script src="./assets/app.js" defer></script>
 </body>

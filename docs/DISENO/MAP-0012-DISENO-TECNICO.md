@@ -1,7 +1,7 @@
 # MAP-0012 — Diseño técnico de política de visibilidad cartográfica (D1)
 **Versión del documento:** **D1 APROBADO** · 2026-11-17
 **Historial de versiones:** D0 proponía pasajes peatonales urbanos en zoom 16+ y ocultar límites administrativos subnacionales; D1 sustituye esos puntos por solicitud expresa del usuario. El resto de D0 se mantiene.
-**Estado:** DISEÑO TÉCNICO APROBADO; IMPLEMENTACIÓN NO AUTORIZADA (sin código ni publicación)
+**Estado:** DISEÑO D1 APROBADO e IMPLEMENTACIÓN AUTORIZADA; código v0.8.0 en rama, sujeto a pruebas/UAT y sin merge.
 **Referencia:** `docs/REQUERIMIENTOS/MAP-0012.md`, issue #5, Mapp v0.7.0, PR #1.
 
 ## 1. Baseline verificado
@@ -175,3 +175,6 @@ Este apéndice indica IDs exactos en el repositorio de referencia; es obligatori
 
 ## 11. Decisión formal de aprobación D1
 Fecha: 2026-11-17. El usuario reiteró dos veces: «Apruebo el diseño técnico D1 de MAP-0012, incluyendo ocultar pasajes peatonales y mostrar límites comunales. Registra la aprobación; la implementación requiere mi autorización posterior.» La doble confirmación se considera **una sola aprobación**, sin permisos de implementación implícitos. Se aprueba el enfoque de módulo declarativo de visibilidad piloto sobre Liberty, reglas D1 (pasajes urbanos `pedestrian` ocultos, senderos `path` y huellas `track` conservados, límites comunales chilenos `admin_level=8` desde z11), umbrales y matriz de pruebas. Si no hay geometría comunal en los tiles, informar bloqueo y obtener aprobación adicional para fuente cartográfica; nunca inventar fronteras. **Siguiente compuerta: AUTORIZACIÓN DE IMPLEMENTACIÓN.** Sin cambios en la aplicación, Pages ni main.
+
+## 12. Implementación autorizada D1 — v0.8.0
+Usuario autoriza expresamente implementar, probar y publicar preview, pero **prohíbe merge a main**. Se implementa módulo `assets/layer-policy.js` que utiliza filtros `setFilter`, rangos `setLayerZoomRange`, opacidad de estanques mediante `step(zoom)` de nivel superior, separación de `track` y `service`, exclusión de `pedestrian` preservando `path`, límites comunales `openmaptiles/boundary/admin_level=8`, ocultación exacta por IDs, reversión y diagnóstico no geolocalizado. Se añade validador oficial MapLibre para la expresión (evitar MAP-0010). Capa comunal solo se representa si los tiles reales la entregan. El comportamiento sobre el terreno requiere UAT real, no solo CI. La expresión de estanques se aplica a las cinco capas de agua para que piscinas no reaparezcan en el arte.

@@ -44,8 +44,11 @@ class FakeMap{
  updateImage(n,im){this.images[n]=im}
  getBounds(){return {getWest:()=>-70.45,getEast:()=>-70.25,getSouth:()=>-33.39,getNorth:()=>-33.29}}
  querySourceFeatures(src,{sourceLayer}){if(src!=='openmaptiles')return [];if(sourceLayer==='landcover')return [{type:'Feature',properties:{class:'wood'},geometry:{type:'Polygon',coordinates:[[[-70.65,-33.75],[-70.06,-33.75],[-70.06,-33.10],[-70.65,-33.10],[-70.65,-33.75]]]}}];return []}
- setPaintProperty(i,p,v){this.paint[i+':'+p]=v}
- setLayoutProperty(i,p,v){this.layout[i+':'+p]=v}
+ setPaintProperty(i,p,v){this.paint[i+':'+p]=v; const l=this.getLayer(i);if(l){l.paint??={};l.paint[p]=v}}
+ setFilter(id,f){const l=this.getLayer(id);if(l)l.filter=f}
+ setLayerZoomRange(id,min,max){const l=this.getLayer(id);if(l){l.minzoom=min;l.maxzoom=max}}
+ removeLayer(id){this._style.layers=this._style.layers.filter(l=>l.id!==id)}
+ setLayoutProperty(i,p,v){this.layout[i+':'+p]=v;const l=this.getLayer(i);if(l){l.layout??={};l.layout[p]=v}}
  getCenter(){return {lat:-33.33,lng:-70.32}}
  getZoom(){return this._zoom}
  flyTo(o){this.flyToLast=o}
@@ -86,12 +89,14 @@ def run_test():
   asset_line="img.src=new URL('./assets/trees/watercolor-atlas.png',document.baseURI).href;"
   assert asset_line in forest
   forest=forest.replace(asset_line, 'img.src='+json.dumps(data)+';')
+  policy=(ROOT/'assets/layer-policy.js').read_text()
+  html=html.replace('<script src="./assets/layer-policy.js" defer></script>','<script>'+policy+'</script>')
   html=html.replace('<script src="./assets/forest.js" defer></script>','<script>'+forest+'</script>')
   html=html.replace('<script src="./assets/app.js" defer></script>','<script>'+ (ROOT/'assets/app.js').read_text()+'</script>')
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
-  assert page.locator('#buildVersion').inner_text()=='v0.7.0'
+  assert page.locator('#buildVersion').inner_text()=='v0.8.0'
   assert 'Z12.0' in page.locator('#buildContext').inner_text()
   assert 'ATLAS' in page.locator('#buildContext').inner_text()
   assert page.get_by_text('Acuarela · Bosque · Tinta').count()==1
@@ -113,8 +118,10 @@ def run_test():
   # A hand-drawn double contour, with no repeated polygon wallpaper texture.
   assert page.evaluate('window.__testMap.getLayer("mapp-water-pastel").paint["line-dasharray"].length')==6
   assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#265D65'
-  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.86
-  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.66
+  assert page.evaluate('window.__testMap.getLayer("mapp-commune-boundary")?.minzoom')==11
+  assert page.evaluate('window.__testMap.getLayer("water")?.paint?.["fill-opacity"]?.[0]')=='step'
+  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.73
+  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.59
 
   # No longer three style choices: watercolor, wood and ink are one visual identity.
   assert page.get_by_role('button',name='Bosque',exact=True).count()==0

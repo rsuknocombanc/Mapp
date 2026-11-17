@@ -43,3 +43,6 @@ Se corrige la expresión `icon-size` de la capa MapLibre `mapp-tree-symbols`: el
 
 ## v0.7.0: composición pictórica por nivel de zoom
 Zoom regional con pinos finos, densos y agrupados mediante ruido suave georreferenciado; zoom cercano con tamaños mayores y claros. Contornos forestales, pastos y parques suavizados mediante veladuras `line-blur`, conservando caminos, rutas y coordenadas. Requiere UAT Edge/Safari con cartografía real.
+
+## v0.8.0 — Política de limpieza cartográfica (MAP-0012)
+La vista atlas filtra piscinas privadas en cinco capas de agua, oculta estanques hasta zoom 14, elimina decoración urbana redundante y pasajes peatonales urbanos, conserva senderos rurales y huellas 4x4 con umbrales propios. Muestra líneas comunales `admin_level=8` de Chile desde zoom 11 **si la fuente vectorial contiene la geometría**; el diagnóstico devuelve «not-observed» si no hay datos en las tiles actuales, no extrapola cobertura nacional. Política versionada y reversible, preserva rutas, Jimny y búsqueda. UI real Edge/Safari pendiente de aceptación.
