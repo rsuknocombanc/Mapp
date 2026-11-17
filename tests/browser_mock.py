@@ -77,8 +77,19 @@ def run_test():
   assert page.evaluate('window.__testMap.layout["building-3d:visibility"]')=='none'
   # layered botanical wash and textured water, without DEM
   assert page.evaluate('window.__testMap.getLayer("mapp-water-wash") && window.__testMap.getLayer("mapp-forest-wash")')
+  assert page.evaluate('window.__testMap.getLayer("mapp-forest-pastel") && window.__testMap.getLayer("mapp-water-pastel")')
+  assert page.evaluate('window.__testMap.getLayer("mapp-route-pastel")')
+  # A hand-drawn double contour, with no repeated polygon wallpaper texture.
+  assert page.evaluate('window.__testMap.getLayer("mapp-water-pastel").paint["line-dasharray"].length')==6
+  assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#5F7E80'
+  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.65
+  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.53
+
   page.get_by_role('button',name='Bosque',exact=True).click()
   assert page.get_by_role('button',name='Bosque',exact=True).get_attribute('aria-pressed')=='true'
+  assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#547479'
+  assert page.evaluate('window.__testMap.paint["mapp-forest-pastel:line-color"]')=='#45583E'
+  assert page.evaluate('window.__testMap.paint["mapp-water-pastel:line-color"]')=='#385D64'
   page.locator('#tabRoute').click()
   assert not page.locator('#routePane').is_hidden()
   page.evaluate('window.__testMap._emit("click",{lngLat:{lng:-70.32,lat:-33.34}})')

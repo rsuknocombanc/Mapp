@@ -17,3 +17,10 @@
 - Vías principales raya-punto; detalle secundario según zoom.
 - Rutas OSRM automáticas y trazado libre, waypoints, búsqueda y GPS opcional.
 - UAT real Edge/Safari pendiente.
+
+## [Unreleased] — v0.4.1 refinamiento de pigmentos (MAP-0006)
+- Verde oliva profundo y agua petróleo, acordes a referencia manual.
+- Bosque y agua con tintas más densas y segunda aguada clara de baja intensidad.
+- Bordes con doble línea: halo difuso y sobreimpresión discontinua de pastel, además de trazos secos en vías principales y ruta activa.
+- Conserva rutas automáticas OSRM, trazado libre, búsqueda Photon, GPS y mapa 2D; no introduce nuevas fuentes DEM.
+- Contrato/JS/rutas/Chromium simulado OK; UAT real en Edge y Safari pendiente.

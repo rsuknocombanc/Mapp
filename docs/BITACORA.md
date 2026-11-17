@@ -20,5 +20,9 @@ Próxima acción: verificar Actions CI y Pages de este commit, evaluar mapa real
 ## 2026-11-17 — v0.4 MAP-0004/0005: arte plano y trazador
 Usuario aprobó estilo papel plano, agua/bosques acuarelados y rutas funcionales. Implementado en la rama activa del PR #1: MapLibre sin DEM ni 3D, aguadas vectoriales sobre superficies naturales, carreteras principales raya-punto y callejones por zoom. Trazado automático por OSRM demo, waypoints y origen GPS opcional; trazado libre por segmentos rectos para sectores sin vías registradas, no implica transitabilidad. Buscador Photon conservado. Tests locales Python contrato, Node sintaxis y cálculo, Chromium con MapLibre/OSRM/Photon simulados: OK. Faltan pruebas contra servidores reales y Edge/Safari. No hacer merge sin aprobación.
 
+## 2026-11-17 — Refinamiento artístico v0.4.1 (MAP-0006)
+Usuario autoriza avanzar con colores más intensos en verdes, azul petróleo más oscuro según su dibujo manual y textura expresiva tipo pastel/carboncillo/crayón. Implementación en la rama activa: paleta #70835A bosque y #5F7E80 agua; 3 estilos; opacidades de bosque/agua incrementadas; doble aguada de pigmento + luz; bordes georreferenciados con línea difusa y trazo seco discontinuo no periódico; sobreimpresión opcional de caminos y textura ligera en ruta, conservando halo y jerarquía. Fondo sigue plano; sin DEM ni imágenes Firewatch. No se modificó la navegación funcional.
+Pruebas locales: Python contrato, Node sintaxis y math rutas, Chromium móvil simulado para colores de agua/bosques, contornos, estilos, OSRM/Photon mock. Pendiente UAT con teselas reales, pruebas Edge/Safari y seguimiento FPS. GitHub CI/preview se comprueban tras commit.
+
 ## Continuidad
-Revisar PR #1 v0.4, CI, Pages y UAT Edge/Safari. Probar arte con teselas reales y rutas OSRM, buscando cuellos de botella. Mantener main estable.
+Revisar PR #1 v0.4.1 MAP-0006, CI/Pages, UAT Edge/Safari. Comparar bosques/agua con la paleta manual y verificar trazos, rutas y carga GPU sobre teselas reales. main estable, sin merge hasta aprobación.

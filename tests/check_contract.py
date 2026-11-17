@@ -15,7 +15,11 @@ for s in ['maplibregl.Map','mapp-route-dashed','mapp-route-halo','road_minor','l
  assert s in js,s
 for s in ["type:'raster-dem'", "type:'color-relief'", "type:'hillshade'"]:
  assert s not in js, f'Found DEM dependency {s}'
-assert 'mapp-forest-texture' not in js
+assert 'mapp-forest-texture' not in js and "'fill-pattern':" not in js
+for layer in ['mapp-forest-pastel','mapp-water-pastel','mapp-forest-lift','mapp-water-lift','mapp-route-pastel']:
+ assert layer in js,layer
+assert "water:'#5F7E80'" in js and "wood:'#70835A'" in js
+assert 'EDICIÓN 0.4.1' in html
 assert '#paperTexture' in css
 assert len(js)<45000,'JS too big for lean prototype'
 print('v0.4 interface, routing and 2D contract OK')

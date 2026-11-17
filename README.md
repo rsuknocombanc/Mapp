@@ -1,6 +1,6 @@
-# Mapp v0.4 — Atlas artístico plano
+# Mapp v0.4.1 — Atlas artístico de pigmento intenso
 
-Prototipo web de mapas personalizados. Fondo de papel, vegetación y agua con transparencias superpuestas como aguadas cartográficas (no acuarela vectorizada de alta fidelidad); sin DEM, 3D ni edificios extruidos. Conserva mapa real de OpenStreetMap/OpenFreeMap, búsqueda Photon, GPS opcional y marcador Jimny.
+Prototipo web de mapas personalizados. Fondo de papel, vegetación oliva de pigmento más concentrado, agua azul petróleo y contornos de pincel seco simulados con dos pasadas de tinta (no acuarela vectorizada de alta fidelidad); sin DEM, 3D ni edificios extruidos. Conserva mapa real de OpenStreetMap/OpenFreeMap, búsqueda Photon, GPS opcional y marcador Jimny.
 
 ## Rutas
 - **Por caminos**: seleccionar A y B tocando el mapa, opcionalmente puntos intermedios, pulsar **Calcular**. Usa el servidor público de demostración OSRM (perfil `driving`), no determina accesibilidad 4×4, peajes, cierres, barro ni navegación giro a giro; no apto para producción. Los puntos elegidos se transmiten a OSRM al calcular.
@@ -16,3 +16,9 @@ MapLibre JS 5.7.1 desde unpkg; OpenFreeMap / OpenStreetMap; Photon; OSRM demo. S
 
 ## Gobierno
 Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`, `docs/REQUERIMIENTOS/MAP-0004.md`, `MAP-0005.md`, y planes UAT. `main` estable; preview por `gh-pages`, sin merge automático.
+
+## Refinamiento visual 0.4.1
+- Referencia cromática: ilustración manual del usuario (verde oliva intenso, agua gris petróleo).
+- Sobreimpresiones geográficas traslúcidas y contornos quebrados sobre los polígonos de bosque y agua; trazo secundario descontinuo sobre vías principales y ruta. No se repiten imágenes de árboles ni se añade relieve.
+- La textura de pastel es una aproximación vectorial, no un renderizado de pincel físico; verificar en Edge y Safari sobre cartografía real.
+- La optimización de carga dependerá de un UAT posterior; se agregan pocas capas, se evita DEM.

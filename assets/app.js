@@ -1,13 +1,15 @@
-/* Mapp v0.4 · Artistic flat watercolor atlas + route sketcher.
- * MAP-0004 / MAP-0005. No DEM, extrusions, tracking, or implicit routing requests.
+/* Mapp v0.4.1 · pigment-rich flat atlas with dry-pastel contour work.
+ * MAP-0004 / MAP-0005 / MAP-0006. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
 const $=id=>document.getElementById(id);
+// Restrained but saturated palette from the user's hand-painted atlas reference.
+// Separate pigment, edge and lightwash colors produce layered pastel strokes, not tiled images.
 const THEMES={
- acuarela:{paper:'#efe5d0',wood:'#76917c',grass:'#a9bb96',park:'#b4bea1',water:'#98baba',waterEdge:'#729a9a',road:'#927b63',primary:'#94745b',minor:'#ad9d85',labels:'#63513e',halo:'#f2e5cd',lines:'#ad9c83'},
- bosque:{paper:'#ebe1c9',wood:'#64856d',grass:'#9aac8e',park:'#a1b398',water:'#8fb3af',waterEdge:'#699492',road:'#90795f',primary:'#8c6d56',minor:'#9fa28d',labels:'#4b5746',halo:'#f1e6cf',lines:'#a8a58c'},
- tinta:{paper:'#f1e7d6',wood:'#a1aa9c',grass:'#c0c6b3',park:'#c6c7b8',water:'#b7c9c6',waterEdge:'#8ea8a4',road:'#a29280',primary:'#7e6e61',minor:'#b0a69b',labels:'#5b554d',halo:'#f3e9da',lines:'#b2a89a'}
+ acuarela:{paper:'#ECE3CE',wood:'#70835A',woodInk:'#526B49',woodLight:'#9EA984',grass:'#A8B58E',park:'#B4C19B',water:'#5F7E80',waterEdge:'#45666A',waterLight:'#91ACAA',road:'#8A715E',primary:'#846754',minor:'#A99A80',labels:'#564936',halo:'#F1E7D2',lines:'#8F826D'},
+ bosque:{paper:'#E8DFC9',wood:'#596E4D',woodInk:'#45583E',woodLight:'#90A078',grass:'#98AC7C',park:'#A4B78F',water:'#547479',waterEdge:'#385D64',waterLight:'#85A2A5',road:'#856C56',primary:'#795F49',minor:'#A0957A',labels:'#48523E',halo:'#EEE4D0',lines:'#8D8069'},
+ tinta:{paper:'#EEE5D3',wood:'#76826C',woodInk:'#565F50',woodLight:'#9BA78D',grass:'#AFBA9D',park:'#B7C1A8',water:'#657D7F',waterEdge:'#4C6668',waterLight:'#A4B5B0',road:'#8D7865',primary:'#766250',minor:'#A39A86',labels:'#565046',halo:'#F3E9D8',lines:'#9B907E'}
 };
 let map,carMarker,searchMarker,selected='acuarela',panel='style',baseReady=false;
 let searchTimer=null,searchRequest=null,searchSeq=0;
@@ -32,11 +34,16 @@ function artStyle(theme){
   if(k==='hillshade'||k==='color-relief'){layout(id,'visibility','none');continue}
   if(k==='background'){paint(id,'background-color',p.paper);continue}
   if(k==='fill'){
-    let color=p.paper,opacity=.035;
-    if(/water|lake|ocean|river|wetland/.test(n)){color=p.water;opacity=.90}
-    else if(/wood|forest|tree/.test(n)){color=p.wood;opacity=.21}
-    else if(/grass|scrub|meadow|landcover/.test(n)){color=p.grass;opacity=.15}
-    else if(/park|landuse|protected|national/.test(n)){color=p.park;opacity=.16}
+    let color=p.paper,opacity=.03;
+    if(/water|lake|ocean|river|wetland/.test(n)){color=p.water;opacity=.97}
+    else if(/wood|forest|tree/.test(n)){color=p.wood;opacity=.65}
+    else if(/landcover/.test(n)){
+      // Landcover may be one mixed class layer; preserve actual geography.
+      color=['match',['get','class'],'wood',p.wood,'forest',p.wood,'grass',p.grass,'scrub',p.grass,p.paper];
+      opacity=['match',['get','class'],'wood',.68,'forest',.68,'grass',.28,'scrub',.25,.03];
+    }
+    else if(/grass|scrub|meadow/.test(n)){color=p.grass;opacity=.31}
+    else if(/park|landuse|protected|national/.test(n)){color=p.park;opacity=.24}
     else if(/building/.test(n)){color=p.lines;opacity=.05}
     paint(id,'fill-color',color);paint(id,'fill-opacity',opacity);
   }
@@ -44,13 +51,13 @@ function artStyle(theme){
     if(/road.+casing|road.+bridge|road.+tunnel|road.+link/.test(n)&&!/water/.test(n)){layout(id,'visibility','none');continue}
     if(/motorway|trunk|primary|secondary|tertiary|road_major/.test(n)){
       paint(id,'line-color',p.primary);paint(id,'line-opacity',.83);paint(id,'line-width',rampZoom(1.25,2,3.8));
-      paint(id,'line-dasharray',[7,2,1.15,2]);
+      paint(id,'line-dasharray',[7.2,1.3,1.05,1.65,.6,2]);paint(id,'line-blur',.23);
     }else if(/road_minor|residential|service|road_path|pedestrian|road_track|footway/.test(n)){
       // Remote tracks retain visibility before city passages, but both appear on close zoom.
       const remote=/track|path|footway/.test(n);
       paint(id,'line-color',remote?p.road:p.minor);
       paint(id,'line-opacity',['interpolate',['linear'],['zoom'],remote?11:13,0,remote?12.5:14.5,remote?.62:.29,17,.57]);
-      paint(id,'line-width',rampZoom(.5,1,1.9));paint(id,'line-dasharray',remote?[2,3]:[1,2]);
+      paint(id,'line-width',rampZoom(.5,1,1.9));paint(id,'line-dasharray',remote?[2.1,2.7,.6,2]:[1.2,2.3,.6,1.6]);paint(id,'line-blur',.18);
     }else if(/water|river|stream/.test(n)){
       paint(id,'line-color',p.waterEdge);paint(id,'line-opacity',.72);paint(id,'line-width',rampZoom(.75,1.6,3));
     }else if(/boundary|admin/.test(n)){
@@ -65,11 +72,18 @@ function artStyle(theme){
     if(/road.*label|road.*name/.test(n))paint(id,'text-opacity',['interpolate',['linear'],['zoom'],11,0,14,.22,16,.68]);
   }
  }
+ // A concentrated underpainting with restrained second wash. No periodic texture fills.
  for(const [id,color,opacity] of [
-  ['mapp-forest-wash',p.wood,.25],['mapp-grass-wash',p.grass,.15],['mapp-water-wash',p.waterEdge,.13]
+  ['mapp-forest-wash',p.wood,.53],['mapp-forest-lift',p.woodLight,.105],
+  ['mapp-grass-wash',p.grass,.25],['mapp-water-wash',p.waterEdge,.34],
+  ['mapp-water-lift',p.waterLight,.065]
  ]){if(map.getLayer(id)){paint(id,'fill-color',color);paint(id,'fill-opacity',opacity)}}
  for(const [id,color,width,blur,opacity] of [
-  ['mapp-forest-edge',p.wood,7,5,.18],['mapp-water-edge',p.waterEdge,5,3.5,.22]
+  ['mapp-forest-edge',p.woodInk,5.2,3.5,.34],
+  ['mapp-forest-pastel',p.woodInk,1.5,.25,.47],
+  ['mapp-water-edge',p.waterEdge,4,2.3,.42],
+  ['mapp-water-pastel',p.waterEdge,1.35,.18,.58],
+  ['mapp-road-pastel',p.primary,1.15,.18,.32]
  ]){if(map.getLayer(id)){paint(id,'line-color',color);paint(id,'line-width',width);paint(id,'line-blur',blur);paint(id,'line-opacity',opacity)}}
  msg('Atlas plano · caminos por escala · trazado disponible',true);
 }
@@ -79,20 +93,34 @@ function addArtWashes(){
  const source=map.getSource('openmaptiles')?'openmaptiles':null;if(!source)return;
  const road=map.getStyle().layers.find(l=>l.type==='line'&&/road/.test(l.id))?.id;
  const before=road||map.getStyle().layers.find(l=>l.type==='symbol')?.id;
+ const woodFilter=['in',['get','class'],['literal',['wood','forest']]];
  const layers=[
-  {id:'mapp-forest-wash',type:'fill',source,'source-layer':'landcover',filter:['==',['get','class'],'wood'],paint:{'fill-color':THEMES[selected].wood,'fill-opacity':.25}},
-  {id:'mapp-grass-wash',type:'fill',source,'source-layer':'landcover',filter:['in',['get','class'],['literal',['grass','scrub']]],paint:{'fill-color':THEMES[selected].grass,'fill-opacity':.15}},
-  {id:'mapp-forest-edge',type:'line',source,'source-layer':'landcover',filter:['==',['get','class'],'wood'],paint:{'line-color':THEMES[selected].wood,'line-width':7,'line-opacity':.18,'line-blur':5}},
-  {id:'mapp-water-wash',type:'fill',source,'source-layer':'water',paint:{'fill-color':THEMES[selected].waterEdge,'fill-opacity':.13}},
-  {id:'mapp-water-edge',type:'line',source,'source-layer':'water',paint:{'line-color':THEMES[selected].waterEdge,'line-width':5,'line-opacity':.22,'line-blur':3.5}}
+  {id:'mapp-forest-wash',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].wood,'fill-opacity':.53}},
+  {id:'mapp-forest-lift',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].woodLight,'fill-opacity':.105}},
+  {id:'mapp-grass-wash',type:'fill',source,'source-layer':'landcover',filter:['in',['get','class'],['literal',['grass','scrub']]],paint:{'fill-color':THEMES[selected].grass,'fill-opacity':.25}},
+  {id:'mapp-forest-edge',type:'line',source,'source-layer':'landcover',filter:woodFilter,paint:{'line-color':THEMES[selected].woodInk,'line-width':5.2,'line-opacity':.34,'line-blur':3.5}},
+  // Dry-pastel edge: broken dark pigment on real forest boundaries; no fill-pattern wallpaper.
+  {id:'mapp-forest-pastel',type:'line',source,'source-layer':'landcover',filter:woodFilter,paint:{'line-color':THEMES[selected].woodInk,'line-width':1.5,'line-opacity':.47,'line-blur':.25,'line-dasharray':[11,1.4,2.4,1.7,.9,2.3]}},
+  {id:'mapp-water-wash',type:'fill',source,'source-layer':'water',paint:{'fill-color':THEMES[selected].waterEdge,'fill-opacity':.34}},
+  {id:'mapp-water-lift',type:'fill',source,'source-layer':'water',paint:{'fill-color':THEMES[selected].waterLight,'fill-opacity':.065}},
+  {id:'mapp-water-edge',type:'line',source,'source-layer':'water',paint:{'line-color':THEMES[selected].waterEdge,'line-width':4,'line-opacity':.42,'line-blur':2.3}},
+  {id:'mapp-water-pastel',type:'line',source,'source-layer':'water',paint:{'line-color':THEMES[selected].waterEdge,'line-width':1.35,'line-opacity':.58,'line-blur':.18,'line-dasharray':[9.6,1.2,1.9,1.9,.7,2.6]}}
  ];
  for(const layer of layers){try{if(!map.getLayer(layer.id))map.addLayer(layer,before)}catch(e){console.warn('Acuarela opcional',layer.id,e.message)}}
+ // Retain the line's native source/filter. The light broken overprint creates pencil grain.
+ const major=map.getStyle().layers.find(l=>l.type==='line'&&!l.id.startsWith('mapp-')&&/road.*major|motorway|trunk|primary|secondary/.test(l.id.toLowerCase())&&l.source&&l['source-layer']);
+ if(major&&!map.getLayer('mapp-road-pastel')){
+  try{map.addLayer({id:'mapp-road-pastel',type:'line',source:major.source,'source-layer':major['source-layer'],...(major.filter?{filter:major.filter}:{}),minzoom:major.minzoom||0,maxzoom:major.maxzoom||24,paint:{'line-color':THEMES[selected].primary,'line-width':1.15,'line-opacity':.32,'line-blur':.18,'line-offset':.55,'line-dasharray':[1.3,1.5,.45,2.4,2.1,1.8]}},before)}catch(e){console.warn('Pastel vial opcional',e.message)}
+ }
+
 }
 function addRouteLayers(){
  map.addSource('mapp-route',{type:'geojson',data:emptyLine()});
  map.addSource('mapp-route-points',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
  map.addLayer({id:'mapp-route-halo',type:'line',source:'mapp-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#f7edd7','line-width':['interpolate',['linear'],['zoom'],8,6,14,9,18,13],'line-opacity':.96}});
- map.addLayer({id:'mapp-route-dashed',type:'line',source:'mapp-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#913d36','line-width':['interpolate',['linear'],['zoom'],8,3,14,4.8,18,7],'line-dasharray':[2.7,1.4],'line-opacity':1}});
+ map.addLayer({id:'mapp-route-dashed',type:'line',source:'mapp-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#8B4238','line-width':['interpolate',['linear'],['zoom'],8,3,14,4.8,18,7],'line-dasharray':[2.7,1.4],'line-opacity':1}});
+ // Very subtle carbon pencil flecks, never replacing the clear high-priority route.
+ map.addLayer({id:'mapp-route-pastel',type:'line',source:'mapp-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#683B32','line-width':['interpolate',['linear'],['zoom'],8,.85,14,1.35,18,2],'line-offset':.35,'line-dasharray':[.6,1.4,2.5,1.9],'line-opacity':.45}});
  map.addLayer({id:'mapp-route-points-circles',type:'circle',source:'mapp-route-points',paint:{'circle-radius':7,'circle-color':'#a34a3c','circle-stroke-color':'#f7ecce','circle-stroke-width':2}});
  map.addLayer({id:'mapp-route-points-label',type:'symbol',source:'mapp-route-points',layout:{'text-field':['get','label'],'text-size':10,'text-font':['Open Sans Bold'],'text-allow-overlap':true},paint:{'text-color':'#fff6e8'}});
 }
