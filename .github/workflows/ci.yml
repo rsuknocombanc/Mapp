@@ -6,19 +6,17 @@ on:
 permissions:
   contents: read
 jobs:
-  validate:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check contract and documentation
+      - name: Validate map and route prototype
         run: |
           python3 tests/check_contract.py
+          node --check assets/app.js
+          node tests/test_route_logic.js
           python3 - <<'PY'
           from pathlib import Path
-          s=Path('index.html').read_text()
-          js=s.rsplit('<script>',1)[1].split('</script>',1)[0]
-          Path('/tmp/mapp.js').write_text(js)
-          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0001.md','docs/REQUERIMIENTOS/MAP-0003.md','docs/DECISIONES/ADR-0003.md','docs/PRUEBAS/UAT-MAP-0003.md']:
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0004.md','docs/REQUERIMIENTOS/MAP-0005.md','docs/DECISIONES/ADR-0004.md','docs/DECISIONES/ADR-0005.md','docs/PRUEBAS/UAT-MAP-0004.md','docs/PRUEBAS/UAT-MAP-0005.md']:
               assert Path(p).is_file(),p
           PY
-          node --check /tmp/mapp.js

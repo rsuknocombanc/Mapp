@@ -17,5 +17,8 @@ Cambios: eliminado `fill-pattern` de bosques, bandas por elevación real DEM med
 Bandas provisionales: 650/1150/1900/3200 m. Nuevo requerimiento MAP-0003 y ADR-0003; ADR-0002 conservado históricamente. CI ampliado con validación de JS y contrato UI; pruebas mock de Chromium locales (no Safari real). Geocodificador público sin SLA, usar prudentemente.
 Próxima acción: verificar Actions CI y Pages de este commit, evaluar mapa real y búsqueda en Safari; recoger observaciones; no mergear a main sin autorización.
 
+## 2026-11-17 — v0.4 MAP-0004/0005: arte plano y trazador
+Usuario aprobó estilo papel plano, agua/bosques acuarelados y rutas funcionales. Implementado en la rama activa del PR #1: MapLibre sin DEM ni 3D, aguadas vectoriales sobre superficies naturales, carreteras principales raya-punto y callejones por zoom. Trazado automático por OSRM demo, waypoints y origen GPS opcional; trazado libre por segmentos rectos para sectores sin vías registradas, no implica transitabilidad. Buscador Photon conservado. Tests locales Python contrato, Node sintaxis y cálculo, Chromium con MapLibre/OSRM/Photon simulados: OK. Faltan pruebas contra servidores reales y Edge/Safari. No hacer merge sin aprobación.
+
 ## Continuidad
-Revisar PR #1 con v0.3.1 MAP-0003; CI, Pages, búsqueda Photon y UAT Safari pendientes. Mantener main y documentación coherentes. Priorizar feedback de elevación por cotas, fluidez y buscador.
+Revisar PR #1 v0.4, CI, Pages y UAT Edge/Safari. Probar arte con teselas reales y rutas OSRM, buscando cuellos de botella. Mantener main estable.

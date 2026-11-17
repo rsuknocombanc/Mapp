@@ -1,13 +1,18 @@
-# Mapp
-App web de mapas personalizables, optimizada para Safari en iPhone.
-Prototipo artístico v0.3 (experimental): vintage off-road con tres estilos (Vintage, Ilustrado y Topográfico), MapLibre GL JS, datos OpenStreetMap vía OpenFreeMap, ubicación GPS opcional y un marcador de vehículo tipo Jimny.
-## Documentación
-Leer AGENTS.md, METODOLOGIA.md, docs/CONTEXTO.md, docs/BITACORA.md y docs/REQUERIMIENTOS/MAP-0001.md.
-## Publicación
-GitHub Actions valida HTML y publica automáticamente desde main usando GitHub Pages (habilitar Settings > Pages > Build and deployment > GitHub Actions). El proyecto está diseñado para abrirse por HTTPS; un HTML abierto en el visor de archivos puede no cargar las teselas.
+# Mapp v0.4 — Atlas artístico plano
 
-## Arte v0.3
-Texturas procedurales Canvas repetidas sobre bosques de OpenStreetMap (`fill-pattern`), relieve DEM Mapterhorn con hillshade suave, paleta vintage. Las nuevas capas son opcionales y deben validarse con Safari real antes de aceptar la versión. No se usa una imagen fija de mapa.
+Prototipo web de mapas personalizados. Fondo de papel, vegetación y agua con transparencias superpuestas como aguadas cartográficas (no acuarela vectorizada de alta fidelidad); sin DEM, 3D ni edificios extruidos. Conserva mapa real de OpenStreetMap/OpenFreeMap, búsqueda Photon, GPS opcional y marcador Jimny.
 
-## Actualización experimental v0.3.1
-Coloración por altitud DEM mediante MapLibre color-relief; bandas de cota iniciales y hillshade 2D suave. La vegetación ya no usa patrones repetitivos. Edificios 3D ocultos. Barra de búsqueda geográfica Photon (instancia pública solo para pruebas de bajo tráfico, sin SLA), selección de resultados y marcador independiente del Jimny. GPS opcional únicamente con permiso. Requiere conexión HTTPS para funcionar plenamente. UAT Safari pendiente.
+## Rutas
+- **Por caminos**: seleccionar A y B tocando el mapa, opcionalmente puntos intermedios, pulsar **Calcular**. Usa el servidor público de demostración OSRM (perfil `driving`), no determina accesibilidad 4×4, peajes, cierres, barro ni navegación giro a giro; no apto para producción. Los puntos elegidos se transmiten a OSRM al calcular.
+- **Trazado libre**: seleccionar puntos sucesivos sin servidor de rutas; conecta segmentos rectos y calcula distancia aproximada. **NO** implica que exista camino o permiso de acceso.
+- El buscador Photon permite localizar lugares y seleccionar origen/destino mientras está abierto el panel de rutas.
+- Ruta seleccionada rojo oscuro discontinuo con borde claro. Vías principales trazo raya-punto; callejones y calles locales aparecen con mayor zoom.
+
+## Probar
+Abrir la URL publicada por GitHub Pages (HTTPS). En PC, DevTools de Edge para rendimiento; luego Safari iPhone. Para pruebas estáticas: `python tests/check_contract.py && node --check assets/app.js`. La suite simulada `python tests/browser_mock.py` requiere Playwright + Chromium en local.
+
+## Conexiones
+MapLibre JS 5.7.1 desde unpkg; OpenFreeMap / OpenStreetMap; Photon; OSRM demo. Se requerirá un backend/plan de proveedores para uso comercial o carga significativa y para rutas off-road verificadas. Sin servicios offline todavía.
+
+## Gobierno
+Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`, `docs/REQUERIMIENTOS/MAP-0004.md`, `MAP-0005.md`, y planes UAT. `main` estable; preview por `gh-pages`, sin merge automático.

@@ -11,3 +11,9 @@
 - Desactiva extrusiones de edificios y baja su peso visual.
 - Incorpora buscador Photon con resultados georreferenciados, marcador propio y manejo de errores.
 - Pruebas estáticas y de interfaz simulada; Safari real pendiente.
+
+## [Unreleased] — v0.4 atlas plano y rutas
+- Sin DEM ni hillshade; acuarelas vectoriales ligeras en bosques y agua, papel crema.
+- Vías principales raya-punto; detalle secundario según zoom.
+- Rutas OSRM automáticas y trazado libre, waypoints, búsqueda y GPS opcional.
+- UAT real Edge/Safari pendiente.
