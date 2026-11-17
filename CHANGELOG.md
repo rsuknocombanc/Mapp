@@ -36,3 +36,10 @@
 - Etiqueta esquina superior derecha con versión v0.5.1, tema activo, zoom y cantidad de pinos generados.
 - Callback local para recuento de símbolos; no se envían datos, sin GPS ni dependencia adicional.
 - UAT pendiente para fidelidad artística MAP-0007; esta revisión no modifica la generación de árboles.
+
+## [Unreleased] — v0.6.0 atlas acuarelado definitivo (MAP-0009)
+- Estilo único: acuarela, bosque y tinta integrados. Se eliminan las tres opciones del panel.
+- Ocho pinos aprobados en acuarela en atlas PNG transparente (24 variantes leves de tono), un solo archivo ≈294 KB.
+- Densidad visible ampliada sobre bosques (~32 px frente a 72 px), cobertura adicional de praderas/parques más dispersa, límite móvil/escritorio y posiciones geográficas estables.
+- Papel cálido, bosque oliva intenso, agua azul petróleo oscuro y caminos óxido; rutas y búsqueda conservadas.
+- Pruebas estáticas, geometría y Chromium simulando MapLibre superadas; Safari/Edge con teselas reales pendientes.

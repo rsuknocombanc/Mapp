@@ -1,23 +1,20 @@
-/* Mapp v0.5 · georeferenced illustrated forest over pigment-rich flat atlas.
+/* Mapp v0.6 · approved watercolor trees, one integrated art direction.
  * MAP-0004/5/6/7. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
-const APP_VERSION='0.5.1';
+const APP_VERSION='0.6.0';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
 const $=id=>document.getElementById(id);
 // Restrained but saturated palette from the user's hand-painted atlas reference.
 // Separate pigment, edge and lightwash colors produce layered pastel strokes, not tiled images.
-const THEMES={
- acuarela:{paper:'#ECE3CE',wood:'#70835A',woodInk:'#526B49',woodLight:'#9EA984',grass:'#A8B58E',park:'#B4C19B',water:'#5F7E80',waterEdge:'#45666A',waterLight:'#91ACAA',road:'#8A715E',primary:'#846754',minor:'#A99A80',labels:'#564936',halo:'#F1E7D2',lines:'#8F826D'},
- bosque:{paper:'#E8DFC9',wood:'#596E4D',woodInk:'#45583E',woodLight:'#90A078',grass:'#98AC7C',park:'#A4B78F',water:'#547479',waterEdge:'#385D64',waterLight:'#85A2A5',road:'#856C56',primary:'#795F49',minor:'#A0957A',labels:'#48523E',halo:'#EEE4D0',lines:'#8D8069'},
- tinta:{paper:'#EEE5D3',wood:'#76826C',woodInk:'#565F50',woodLight:'#9BA78D',grass:'#AFBA9D',park:'#B7C1A8',water:'#657D7F',waterEdge:'#4C6668',waterLight:'#A4B5B0',road:'#8D7865',primary:'#766250',minor:'#A39A86',labels:'#565046',halo:'#F3E9D8',lines:'#9B907E'}
-};
-let map,carMarker,searchMarker,selected='acuarela',panel='style',baseReady=false;
+// ONE visual language: watercolor washes + illustrated woods + pencil/ink linework.
+const THEMES={atlas:{paper:'#EFDEB9',wood:'#6B8652',woodInk:'#39593B',woodLight:'#A2B078',grass:'#9BB276',park:'#A5B887',water:'#265D65',waterEdge:'#174B54',waterLight:'#719A93',road:'#96583C',primary:'#9B5737',minor:'#B18D6B',labels:'#4E3A2D',halo:'#F3E3C1',lines:'#806349'}};
+let map,carMarker,searchMarker,selected='atlas',panel='style',baseReady=false;
 let visibleTrees=0;
 function updateBuildStamp(){
  const label=$('buildVersion'),context=$('buildContext');
  if(label)label.textContent='v'+APP_VERSION;
- if(context)context.textContent=`${selected.toUpperCase()} · Z${map?.getZoom?.().toFixed(1)??'—'} · ${visibleTrees} PINOS`;
+ if(context)context.textContent=`ATLAS · Z${map?.getZoom?.().toFixed(1)??'—'} · ${visibleTrees} PINOS`;
 }
 
 let illustratedForest=null; // MAP-0007: georeferenced illustration module
@@ -34,7 +31,6 @@ function artStyle(theme){
  selected=theme;const p=THEMES[theme];
  updateBuildStamp();
  document.documentElement.style.setProperty('--paper',p.paper);
- document.querySelectorAll('.styleChoice').forEach(b=>{const is=b.dataset.style===theme;b.classList.toggle('active',is);b.setAttribute('aria-pressed',String(is))});
  if(!map||!map.isStyleLoaded())return;
  for(const lyr of map.getStyle().layers){
   if(lyr.id.startsWith('mapp-'))continue;
@@ -46,14 +42,14 @@ function artStyle(theme){
   if(k==='fill'){
     let color=p.paper,opacity=.03;
     if(/water|lake|ocean|river|wetland/.test(n)){color=p.water;opacity=.97}
-    else if(/wood|forest|tree/.test(n)){color=p.wood;opacity=.65}
+    else if(/wood|forest|tree/.test(n)){color=p.wood;opacity=.86}
     else if(/landcover/.test(n)){
       // Landcover may be one mixed class layer; preserve actual geography.
       color=['match',['get','class'],'wood',p.wood,'forest',p.wood,'grass',p.grass,'scrub',p.grass,p.paper];
-      opacity=['match',['get','class'],'wood',.68,'forest',.68,'grass',.28,'scrub',.25,.03];
+      opacity=['match',['get','class'],'wood',.88,'forest',.88,'grass',.46,'scrub',.37,.03];
     }
-    else if(/grass|scrub|meadow/.test(n)){color=p.grass;opacity=.31}
-    else if(/park|landuse|protected|national/.test(n)){color=p.park;opacity=.24}
+    else if(/grass|scrub|meadow/.test(n)){color=p.grass;opacity=.47}
+    else if(/park|landuse|protected|national/.test(n)){color=p.park;opacity=.48}
     else if(/building/.test(n)){color=p.lines;opacity=.05}
     paint(id,'fill-color',color);paint(id,'fill-opacity',opacity);
   }
@@ -84,8 +80,8 @@ function artStyle(theme){
  }
  // A concentrated underpainting with restrained second wash. No periodic texture fills.
  for(const [id,color,opacity] of [
-  ['mapp-forest-wash',p.wood,.53],['mapp-forest-lift',p.woodLight,.105],
-  ['mapp-grass-wash',p.grass,.25],['mapp-water-wash',p.waterEdge,.34],
+  ['mapp-forest-wash',p.wood,.66],['mapp-forest-lift',p.woodLight,.14],
+  ['mapp-grass-wash',p.grass,.38],['mapp-park-wash',p.park,.26],['mapp-water-wash',p.waterEdge,.32],
   ['mapp-water-lift',p.waterLight,.065]
  ]){if(map.getLayer(id)){paint(id,'fill-color',color);paint(id,'fill-opacity',opacity)}}
  for(const [id,color,width,blur,opacity] of [
@@ -95,7 +91,6 @@ function artStyle(theme){
   ['mapp-water-pastel',p.waterEdge,1.35,.18,.58],
   ['mapp-road-pastel',p.primary,1.15,.18,.32]
  ]){if(map.getLayer(id)){paint(id,'line-color',color);paint(id,'line-width',width);paint(id,'line-blur',blur);paint(id,'line-opacity',opacity)}}
- illustratedForest?.setTheme(theme);
  msg('Atlas ilustrado · árboles por cobertura · rutas disponibles',true);
 }
 function addArtWashes(){
@@ -106,9 +101,10 @@ function addArtWashes(){
  const before=road||map.getStyle().layers.find(l=>l.type==='symbol')?.id;
  const woodFilter=['in',['get','class'],['literal',['wood','forest']]];
  const layers=[
-  {id:'mapp-forest-wash',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].wood,'fill-opacity':.53}},
-  {id:'mapp-forest-lift',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].woodLight,'fill-opacity':.105}},
-  {id:'mapp-grass-wash',type:'fill',source,'source-layer':'landcover',filter:['in',['get','class'],['literal',['grass','scrub']]],paint:{'fill-color':THEMES[selected].grass,'fill-opacity':.25}},
+  {id:'mapp-forest-wash',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].wood,'fill-opacity':.66}},
+  {id:'mapp-forest-lift',type:'fill',source,'source-layer':'landcover',filter:woodFilter,paint:{'fill-color':THEMES[selected].woodLight,'fill-opacity':.14}},
+  {id:'mapp-grass-wash',type:'fill',source,'source-layer':'landcover',filter:['in',['get','class'],['literal',['grass','scrub']]],paint:{'fill-color':THEMES[selected].grass,'fill-opacity':.38}},
+  {id:'mapp-park-wash',type:'fill',source,'source-layer':'park',paint:{'fill-color':THEMES[selected].park,'fill-opacity':.26}},
   {id:'mapp-forest-edge',type:'line',source,'source-layer':'landcover',filter:woodFilter,paint:{'line-color':THEMES[selected].woodInk,'line-width':5.2,'line-opacity':.34,'line-blur':3.5}},
   // Dry-pastel edge: broken dark pigment on real forest boundaries; no fill-pattern wallpaper.
   {id:'mapp-forest-pastel',type:'line',source,'source-layer':'landcover',filter:woodFilter,paint:{'line-color':THEMES[selected].woodInk,'line-width':1.5,'line-opacity':.47,'line-blur':.25,'line-dasharray':[11,1.4,2.4,1.7,.9,2.3]}},
@@ -145,7 +141,7 @@ async function start(){
   carMarker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
   map.on('load',()=>{
     baseReady=true;artStyle(selected);addArtWashes();
-    illustratedForest=window.MappForest?.install(map,{theme:selected,maxDesktop:260,maxMobile:130,onStats:count=>{visibleTrees=count;updateBuildStamp()}})||null;
+    illustratedForest=window.MappForest?.install(map,{maxDesktop:480,maxMobile:270,onStats:count=>{visibleTrees=count;updateBuildStamp()}})||null;
     updateBuildStamp();
     addRouteLayers();refreshRoute();
     const att=document.createElement('div');att.className='attribution';att.textContent='© OpenStreetMap contributors · OpenFreeMap';att.style.cssText='position:absolute;bottom:0;left:0;z-index:3;background:#f2e9d4db;color:#84755d;font:9px system-ui;padding:3px 6px';$('map').append(att);
@@ -265,7 +261,7 @@ async function searchPlaces(){const term=searchInput.value.trim();if(term.length
  }catch(e){if(e.name!=='AbortError'&&id===searchSeq)searchMessage('El buscador no responde. Reintenta.')}finally{if(id===searchSeq)searchRequest=null}
 }
 $('tabStyle').addEventListener('click',()=>setPanel('style'));$('tabRoute').addEventListener('click',()=>setPanel('route'));
-document.querySelectorAll('.styleChoice').forEach(b=>b.addEventListener('click',()=>artStyle(b.dataset.style)));
+// Style selection intentionally removed: watercolor, woodland and ink are one approved visual identity.
 $('modeAutomatic').onclick=()=>modeRoute('auto');$('modeManual').onclick=()=>modeRoute('manual');
 $('routeCalculate').onclick=autoRoute;$('routeClear').onclick=clearRoute;
 $('routeUndo').onclick=()=>{if(!routePoints.length)return;abortRoute();routePoints.pop();addingStop=false;routeAutoCalculated=false;routeSummary='';refreshRoute()};

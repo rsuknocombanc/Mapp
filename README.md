@@ -30,5 +30,11 @@ Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`,
 - Árboles debajo de calles, etiquetas y rutas, sin interferir con GPS, Jimny, buscador y trazado. Fallback sin árboles si fallan imágenes/capas.
 - Cambiar Acuarela/Bosque/Tinta recolorea los árboles y conserva geometría de bosque.
 - Validar en Edge y Safari reales: este es un prototipo, no acuarela pintada manualmente ni cobertura global de alta precisión.
-## Identificador visual v0.5.1 (MAP-0008)
-Arriba a la derecha aparece la versión junto con estilo activo, zoom y número de pinos generados. Esto facilita comparar capturas de Edge y Safari: 0 pinos puede significar ausencia de polígonos compatibles, datos aún sin cargar o ausencia de candidatos en esa vista; un valor positivo significa símbolos generados, no necesariamente buena legibilidad. Es diagnóstico local y no comparte GPS.
+
+## Atlas visual unificado v0.6.0 — MAP-0009
+- **Una sola estética:** acuarela para masas naturales y agua, bosque con árboles pintados y tinta para caminos/rutas. No hay selector de temas.
+- **8 pinos aprobados** por el usuario en acuarela, recortados con transparencia de la lámina generada y convertidos en 24 variaciones leves de pigmento. `assets/trees/watercolor-atlas.png` incluye el recurso comprimido (una descarga ≈300 KB).
+- Separación entre muestras forestales reducida a ~32 px por zoom; sobre bosques OpenMapTiles la densidad es alta y sobre parques/praderas más dispersa. Dato ilustrativo, **no** certifica presencia de pinos en un lugar.
+- Paleta: papel `#EFDEB9`, bosque `#6B8652`, agua `#265D65`, tinta/óxido `#9B5737`. MapLibre sigue siendo mapa real con búsqueda, GPS y rutas.
+- En la esquina superior derecha se informa `v0.6.0`, `ATLAS`, zoom y símbolos de pino generados. Datos geográficos propios no se transmiten a nuevos servicios; siguen las limitaciones externas de Photon y OSRM.
+- Pruebas: Python contrato, Node sintaxis, geografía y rutas, Chromium simulado con **PNG auténtico** decodificado. UAT pendiente sobre teselas reales Edge y Safari; no se ha comprobado el rendimiento real ni la equivalencia total con la maqueta aprobada.

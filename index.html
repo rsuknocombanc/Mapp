@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#ece3ce" />
-<meta name="description" content="Mapp: atlas ilustrado para explorar rutas y lugares reales." />
+<meta name="description" content="Mapp: atlas artístico de acuarela para explorar rutas y lugares reales." />
 <title>Mapp — Atlas de exploración</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.css" />
 <link rel="stylesheet" href="./assets/app.css" />
@@ -34,17 +34,13 @@
 <div class="mapTools"><button class="mapButton" id="zoomIn" aria-label="Acercar">+</button><button class="mapButton" id="zoomOut" aria-label="Alejar">−</button><button class="mapButton" id="locate" aria-label="Mi ubicación GPS">⌖</button></div>
 <section class="dock" aria-label="Controles del mapa">
   <div class="dockTabs" role="tablist" aria-label="Panel principal">
-    <button id="tabStyle" class="dockTab active" role="tab" aria-selected="true" aria-controls="stylePane">ESTILOS</button>
+    <button id="tabStyle" class="dockTab active" role="tab" aria-selected="true" aria-controls="stylePane">ARTE</button>
     <button id="tabRoute" class="dockTab" role="tab" aria-selected="false" aria-controls="routePane">TRAZAR RUTA</button>
-    <small>EDICIÓN 0.5.1</small>
+    <small>EDICIÓN 0.6</small>
   </div>
   <div id="stylePane" role="tabpanel" aria-labelledby="tabStyle">
-    <div class="swatches">
-      <button class="styleChoice active" data-style="acuarela" aria-pressed="true"><span class="swatch swatch-watercolor"></span><span>Acuarela</span></button>
-      <button class="styleChoice" data-style="bosque" aria-pressed="false"><span class="swatch swatch-forest"></span><span>Bosque</span></button>
-      <button class="styleChoice" data-style="tinta" aria-pressed="false"><span class="swatch swatch-ink"></span><span>Tinta</span></button>
-    </div>
-    <p class="helper">Papel y pigmentos intensos, trazos tipo pastel. Detalle según zoom.</p>
+    <div class="artDefinition"><span class="artMiniature" aria-hidden="true"></span><div><strong>Atlas ilustrado</strong><small>Acuarela · Bosque · Tinta</small></div></div>
+    <p class="helper">Papel cálido, árboles pintados y rutas trazadas a tinta. Un único estilo artístico.</p>
   </div>
   <div id="routePane" role="tabpanel" aria-labelledby="tabRoute" hidden>
     <div class="modeRow" role="group" aria-label="Modo de trazado">

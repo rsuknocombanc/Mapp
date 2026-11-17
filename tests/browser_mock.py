@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 from pathlib import Path
+import base64
 import json
 import subprocess
 ROOT=Path(__file__).resolve().parents[1]
@@ -74,13 +75,21 @@ def run_test():
   html=(ROOT/'index.html').read_text().replace('<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.css" />','')
   html=html.replace('<link rel="stylesheet" href="./assets/app.css" />','<style>'+ (ROOT/'assets/app.css').read_text()+'</style>')
   html=html.replace('<script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>','<script>'+FAKE+fake_fetch+'</script>')
-  html=html.replace('<script src="./assets/forest.js" defer></script>','<script>'+ (ROOT/'assets/forest.js').read_text()+'</script>')
+  forest=(ROOT/'assets/forest.js').read_text()
+  data='data:image/png;base64,'+base64.b64encode((ROOT/'assets/trees/watercolor-atlas.png').read_bytes()).decode('ascii')
+  asset_line="img.src=new URL('./assets/trees/watercolor-atlas.png',document.baseURI).href;"
+  assert asset_line in forest
+  forest=forest.replace(asset_line, 'img.src='+json.dumps(data)+';')
+  html=html.replace('<script src="./assets/forest.js" defer></script>','<script>'+forest+'</script>')
   html=html.replace('<script src="./assets/app.js" defer></script>','<script>'+ (ROOT/'assets/app.js').read_text()+'</script>')
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
-  assert page.locator('#buildVersion').inner_text()=='v0.5.1'
+  assert page.locator('#buildVersion').inner_text()=='v0.6.0'
   assert 'Z12.0' in page.locator('#buildContext').inner_text()
+  assert 'ATLAS' in page.locator('#buildContext').inner_text()
+  assert page.get_by_text('Acuarela · Bosque · Tinta').count()==1
+  assert page.locator('.styleChoice').count()==0
   assert 'PINOS' in page.locator('#buildContext').inner_text()
   assert page.evaluate('!Object.keys(window.__testMap._sources).some(k=>k.includes("elevation"))')
   assert page.evaluate('window.__testMap.layout["building-3d:visibility"]')=='none'
@@ -89,24 +98,21 @@ def run_test():
   assert page.evaluate('window.__testMap.getLayer("mapp-forest-pastel") && window.__testMap.getLayer("mapp-water-pastel")')
   assert page.evaluate('window.__testMap.getLayer("mapp-route-pastel")')
   page.wait_for_function('window.__testMap.getSource("mapp-tree-points")?.data?.features?.length>0')
-  assert page.evaluate('Object.keys(window.__testMap.images).length')==8
+  assert page.evaluate('Object.keys(window.__testMap.images).length')==24
   assert page.evaluate('window.__testMap.getLayer("mapp-tree-symbols").type')=='symbol'
   assert page.evaluate('window.__testMap._style.layers.findIndex(x=>x.id==="mapp-tree-symbols") < window.__testMap._style.layers.findIndex(x=>x.id==="road_motorway")')
-  assert page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=130
+  assert 30<page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=270
+  assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data.length')==176*216*4
+  assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data[3*176*4+40*4+3]') in range(256)
   # A hand-drawn double contour, with no repeated polygon wallpaper texture.
   assert page.evaluate('window.__testMap.getLayer("mapp-water-pastel").paint["line-dasharray"].length')==6
-  assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#5F7E80'
-  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.65
-  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.53
+  assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#265D65'
+  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.86
+  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.66
 
-  page.get_by_role('button',name='Bosque',exact=True).click()
-  assert page.get_by_role('button',name='Bosque',exact=True).get_attribute('aria-pressed')=='true'
-  assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#547479'
-  assert page.evaluate('window.__testMap.paint["mapp-forest-pastel:line-color"]')=='#45583E'
-  assert page.evaluate('window.__testMap.paint["mapp-water-pastel:line-color"]')=='#385D64'
-  assert page.evaluate('window.__testMap.images["mapp-pine-0"].data.length>5000')
-  page.get_by_role('button',name='Tinta',exact=True).click()
-  assert page.evaluate('window.__testMap.paint["mapp-tree-symbols:icon-opacity"]')==.81
+  # No longer three style choices: watercolor, wood and ink are one visual identity.
+  assert page.get_by_role('button',name='Bosque',exact=True).count()==0
+  assert page.get_by_role('button',name='Tinta',exact=True).count()==0
   page.locator('#tabRoute').click()
   assert not page.locator('#routePane').is_hidden()
   page.evaluate('window.__testMap._emit("click",{lngLat:{lng:-70.32,lat:-33.34}})')
@@ -131,6 +137,6 @@ def run_test():
   assert page.evaluate('window.__testMap.getSource("mapp-route-points").data.features.length')==1
   page.screenshot(path=str(ROOT/'tests/mobile_mock.png'),full_page=True)
   assert not errors,errors
-  print('CHROMIUM MOCK: forest sprites/placement, styles, art, auto/manual routes, undo, Photon OK')
+  print('CHROMIUM MOCK: approved watercolor PNG decoded, 24 varied tree sprites, one art direction, routes and Photon OK')
   browser.close()
 if __name__=='__main__':main()
