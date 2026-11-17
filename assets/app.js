@@ -1,5 +1,5 @@
-/* Mapp v0.4.1 · pigment-rich flat atlas with dry-pastel contour work.
- * MAP-0004 / MAP-0005 / MAP-0006. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
+/* Mapp v0.5 · georeferenced illustrated forest over pigment-rich flat atlas.
+ * MAP-0004/5/6/7. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
@@ -12,6 +12,7 @@ const THEMES={
  tinta:{paper:'#EEE5D3',wood:'#76826C',woodInk:'#565F50',woodLight:'#9BA78D',grass:'#AFBA9D',park:'#B7C1A8',water:'#657D7F',waterEdge:'#4C6668',waterLight:'#A4B5B0',road:'#8D7865',primary:'#766250',minor:'#A39A86',labels:'#565046',halo:'#F3E9D8',lines:'#9B907E'}
 };
 let map,carMarker,searchMarker,selected='acuarela',panel='style',baseReady=false;
+let illustratedForest=null; // MAP-0007: georeferenced illustration module
 let searchTimer=null,searchRequest=null,searchSeq=0;
 const searchCache=new Map();
 let routeMode='auto',routePoints=[],routeGeometry=[],routeSummary='',routeRequest=null,routeSeq=0,addingStop=false,routeAutoCalculated=false;
@@ -85,7 +86,8 @@ function artStyle(theme){
   ['mapp-water-pastel',p.waterEdge,1.35,.18,.58],
   ['mapp-road-pastel',p.primary,1.15,.18,.32]
  ]){if(map.getLayer(id)){paint(id,'line-color',color);paint(id,'line-width',width);paint(id,'line-blur',blur);paint(id,'line-opacity',opacity)}}
- msg('Atlas plano · caminos por escala · trazado disponible',true);
+ illustratedForest?.setTheme(theme);
+ msg('Atlas ilustrado · árboles por cobertura · rutas disponibles',true);
 }
 function addArtWashes(){
  // Low-opacity, non-repeating geographical washes; no tiled tree icons or DEM.
@@ -133,9 +135,11 @@ async function start(){
   const el=document.createElement('div');el.innerHTML=vehicle;
   carMarker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
   map.on('load',()=>{
-    baseReady=true;artStyle(selected);addArtWashes();addRouteLayers();refreshRoute();
+    baseReady=true;artStyle(selected);addArtWashes();
+    illustratedForest=window.MappForest?.install(map,{theme:selected,maxDesktop:260,maxMobile:130})||null;
+    addRouteLayers();refreshRoute();
     const att=document.createElement('div');att.className='attribution';att.textContent='© OpenStreetMap contributors · OpenFreeMap';att.style.cssText='position:absolute;bottom:0;left:0;z-index:3;background:#f2e9d4db;color:#84755d;font:9px system-ui;padding:3px 6px';$('map').append(att);
-    msg('Mapa listo · vista artística plana',true);
+    msg(illustratedForest?.enabled?'Mapa listo · árboles ilustrados activos':'Mapa listo · capa de árboles no disponible',true);
   });
   map.on('click',e=>{if(panel!=='route'||!baseReady)return;addWaypoint([e.lngLat.lng,e.lngLat.lat])});
   map.on('error',e=>{if(!baseReady)msg('El mapa está tardando en cargar. Revisa conexión.');console.warn('MapLibre',e.error?.message||e)});

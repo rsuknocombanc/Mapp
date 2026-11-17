@@ -24,3 +24,10 @@
 - Bordes con doble línea: halo difuso y sobreimpresión discontinua de pastel, además de trazos secos en vías principales y ruta activa.
 - Conserva rutas automáticas OSRM, trazado libre, búsqueda Photon, GPS y mapa 2D; no introduce nuevas fuentes DEM.
 - Contrato/JS/rutas/Chromium simulado OK; UAT real en Edge y Safari pendiente.
+
+## [Unreleased] — v0.5 Árboles ilustrados (MAP-0007)
+- 8 variantes originales de coníferas y pequeños grupos, con facetas tipo pastel pintadas por Canvas; tres paletas coherentes con el mapa.
+- Posición determinista georreferenciada dentro de polígonos de vegetación OpenMapTiles, con huecos, densidad por tipo y nivel de zoom; sin wallpaper repetido.
+- Capa de símbolos antes de vías y rutas, iconos límites por viewport (130 móvil, 260 PC), actualización diferida y fallback.
+- Rutas manuales y automáticas, búsqueda, GPS, Jimny, agua y papel plano conservados.
+- Node sintaxis y tests geometría/rutas/contrato, Chromium UI simulado OK; UAT real Edge/Safari pendiente.

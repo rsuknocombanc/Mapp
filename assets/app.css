@@ -40,3 +40,5 @@ h1{margin:0;font-weight:700;letter-spacing:.20em;font-size:28px;line-height:1}
 .car{width:45px;height:67px;filter:drop-shadow(0 2px 3px #33261d83)}.car svg{width:45px;height:67px;display:block}
 @media(max-width:420px){h1{font-size:24px}.brandline p{font-size:8px}#searchShell{top:calc(env(safe-area-inset-top) + 88px)}.compass{top:calc(env(safe-area-inset-top) + 88px)}#mapAreaLabel{top:calc(env(safe-area-inset-top) + 145px)}.mapTools{bottom:calc(env(safe-area-inset-bottom) + 188px)}.dock{padding:10px 11px}.swatches{gap:5px}.styleChoice{gap:4px;font-size:11px}.routeActions{gap:4px}.routeActions button{padding:8px 6px}}
 @media(max-height:650px){.helper{display:none}.mapTools{bottom:calc(env(safe-area-inset-bottom) + 168px)}.dock{padding:9px 11px}.routeActions button{padding:7px 6px}.notice{font-size:9px}}
+
+/* MAP-0007: tree symbols live in the MapLibre canvas below roads/labels; no DOM overlays. */

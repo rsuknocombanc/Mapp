@@ -19,7 +19,18 @@ assert 'mapp-forest-texture' not in js and "'fill-pattern':" not in js
 for layer in ['mapp-forest-pastel','mapp-water-pastel','mapp-forest-lift','mapp-water-lift','mapp-route-pastel']:
  assert layer in js,layer
 assert "water:'#5F7E80'" in js and "wood:'#70835A'" in js
-assert 'EDICIÓN 0.4.1' in html
+assert 'EDICIÓN 0.5' in html
 assert '#paperTexture' in css
 assert len(js)<45000,'JS too big for lean prototype'
 print('v0.4 interface, routing and 2D contract OK')
+
+# MAP-0007: Original geographic trees; no repeating fill-pattern or terrain.
+forest=Path('assets/forest.js').read_text()
+assert '<script src="./assets/forest.js" defer></script>' in html
+assert 'illustratedForest=window.MappForest?.install' in js
+assert 'illustratedForest?.setTheme(theme)' in js
+for token in ['querySourceFeatures', 'sourceLayer:layer', 'mapp-tree-symbols', 'mapp-tree-points', 'icon-ignore-placement', 'hash(ix,iy', 'inRing', 'pixelRatio:2', 'setTimeout(refresh', 'map.getBounds()', 'map.addImage', 'map.updateImage']:
+ assert token in forest, token
+assert 'Math.random' not in forest and 'fill-pattern' not in forest
+assert forest.count('querySourceFeatures')<=2, 'avoid repeated tile queries'
+assert len(forest)<18000, 'heavy symbols module'

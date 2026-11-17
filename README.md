@@ -1,4 +1,4 @@
-# Mapp v0.4.1 — Atlas artístico de pigmento intenso
+# Mapp v0.5 — Atlas artístico de pigmento intenso
 
 Prototipo web de mapas personalizados. Fondo de papel, vegetación oliva de pigmento más concentrado, agua azul petróleo y contornos de pincel seco simulados con dos pasadas de tinta (no acuarela vectorizada de alta fidelidad); sin DEM, 3D ni edificios extruidos. Conserva mapa real de OpenStreetMap/OpenFreeMap, búsqueda Photon, GPS opcional y marcador Jimny.
 
@@ -22,3 +22,11 @@ Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`,
 - Sobreimpresiones geográficas traslúcidas y contornos quebrados sobre los polígonos de bosque y agua; trazo secundario descontinuo sobre vías principales y ruta. No se repiten imágenes de árboles ni se añade relieve.
 - La textura de pastel es una aproximación vectorial, no un renderizado de pincel físico; verificar en Edge y Safari sobre cartografía real.
 - La optimización de carga dependerá de un UAT posterior; se agregan pocas capas, se evita DEM.
+
+## Bosques ilustrados georreferenciados — MAP-0007 (experimental)
+- Ocho sprites de coníferas y pequeños grupos **dibujados originalmente con Canvas**, con facetas de pigmento y trazos tipo pastel. No son activos de Firewatch.
+- Posiciones ancladas a una cuadrícula Mercator con semilla determinista y enmascaradas por polígonos reales de `openmaptiles.landcover` (bosques), con distribución ilustrativa baja en parques/praderas. No constituye inventario de árboles.
+- Densidad/escala ajustadas por zoom, presupuesto máximo de 130 símbolos en viewport móvil y 260 en escritorio, actualización diferida al mover mapa y sólo en región cargada. El cambio de nivel de detalle puede reorganizar símbolos al cruzar un nivel de zoom entero.
+- Árboles debajo de calles, etiquetas y rutas, sin interferir con GPS, Jimny, buscador y trazado. Fallback sin árboles si fallan imágenes/capas.
+- Cambiar Acuarela/Bosque/Tinta recolorea los árboles y conserva geometría de bosque.
+- Validar en Edge y Safari reales: este es un prototipo, no acuarela pintada manualmente ni cobertura global de alta precisión.

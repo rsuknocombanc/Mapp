@@ -19,7 +19,7 @@ class FakeMap{
  {id:'poi_label',type:'symbol'},
  {id:'road_name',type:'symbol'},
  {id:'building-3d',type:'fill-extrusion'}]};
- this._sources={openmaptiles:{}};this.paint={};this.layout={};this._listeners={};this._zoom=12;
+ this._sources={openmaptiles:{}};this.paint={};this.layout={};this._listeners={};this._zoom=12;this.images={};
  this.touchZoomRotate={disableRotation:()=>{}};window.__testMap=this;window.__testMaps.push(this);
  setTimeout(()=>this._emit('load'),0);
  }
@@ -31,7 +31,12 @@ class FakeMap{
  getSource(id){return this._sources[id]}
  addSource(id,o){this._sources[id]={setData:d=>{this._sources[id].data=d},data:o.data}}
  getLayer(id){return this._style.layers.find(l=>l.id===id)}
- addLayer(o,before){this._style.layers.push(o)}
+ addLayer(o,before){const idx=this._style.layers.findIndex(x=>x.id===before);if(idx>=0)this._style.layers.splice(idx,0,o);else this._style.layers.push(o)}
+ hasImage(n){return !!this.images[n]}
+ addImage(n,im,opts){this.images[n]=im}
+ updateImage(n,im){this.images[n]=im}
+ getBounds(){return {getWest:()=>-70.45,getEast:()=>-70.25,getSouth:()=>-33.39,getNorth:()=>-33.29}}
+ querySourceFeatures(src,{sourceLayer}){if(src!=='openmaptiles')return [];if(sourceLayer==='landcover')return [{type:'Feature',properties:{class:'wood'},geometry:{type:'Polygon',coordinates:[[[-70.65,-33.75],[-70.06,-33.75],[-70.06,-33.10],[-70.65,-33.10],[-70.65,-33.75]]]}}];return []}
  setPaintProperty(i,p,v){this.paint[i+':'+p]=v}
  setLayoutProperty(i,p,v){this.layout[i+':'+p]=v}
  getCenter(){return {lat:-33.33,lng:-70.32}}
@@ -69,6 +74,7 @@ def run_test():
   html=(ROOT/'index.html').read_text().replace('<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.css" />','')
   html=html.replace('<link rel="stylesheet" href="./assets/app.css" />','<style>'+ (ROOT/'assets/app.css').read_text()+'</style>')
   html=html.replace('<script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>','<script>'+FAKE+fake_fetch+'</script>')
+  html=html.replace('<script src="./assets/forest.js" defer></script>','<script>'+ (ROOT/'assets/forest.js').read_text()+'</script>')
   html=html.replace('<script src="./assets/app.js" defer></script>','<script>'+ (ROOT/'assets/app.js').read_text()+'</script>')
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
@@ -79,6 +85,11 @@ def run_test():
   assert page.evaluate('window.__testMap.getLayer("mapp-water-wash") && window.__testMap.getLayer("mapp-forest-wash")')
   assert page.evaluate('window.__testMap.getLayer("mapp-forest-pastel") && window.__testMap.getLayer("mapp-water-pastel")')
   assert page.evaluate('window.__testMap.getLayer("mapp-route-pastel")')
+  page.wait_for_function('window.__testMap.getSource("mapp-tree-points")?.data?.features?.length>0')
+  assert page.evaluate('Object.keys(window.__testMap.images).length')==8
+  assert page.evaluate('window.__testMap.getLayer("mapp-tree-symbols").type')=='symbol'
+  assert page.evaluate('window.__testMap._style.layers.findIndex(x=>x.id==="mapp-tree-symbols") < window.__testMap._style.layers.findIndex(x=>x.id==="road_motorway")')
+  assert page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=130
   # A hand-drawn double contour, with no repeated polygon wallpaper texture.
   assert page.evaluate('window.__testMap.getLayer("mapp-water-pastel").paint["line-dasharray"].length')==6
   assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#5F7E80'
@@ -90,6 +101,9 @@ def run_test():
   assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#547479'
   assert page.evaluate('window.__testMap.paint["mapp-forest-pastel:line-color"]')=='#45583E'
   assert page.evaluate('window.__testMap.paint["mapp-water-pastel:line-color"]')=='#385D64'
+  assert page.evaluate('window.__testMap.images["mapp-pine-0"].data.length>5000')
+  page.get_by_role('button',name='Tinta',exact=True).click()
+  assert page.evaluate('window.__testMap.paint["mapp-tree-symbols:icon-opacity"]')==.81
   page.locator('#tabRoute').click()
   assert not page.locator('#routePane').is_hidden()
   page.evaluate('window.__testMap._emit("click",{lngLat:{lng:-70.32,lat:-33.34}})')
@@ -114,6 +128,6 @@ def run_test():
   assert page.evaluate('window.__testMap.getSource("mapp-route-points").data.features.length')==1
   page.screenshot(path=str(ROOT/'tests/mobile_mock.png'),full_page=True)
   assert not errors,errors
-  print('CHROMIUM MOCK: style, art, auto route, manual route, undo, Photon destination OK')
+  print('CHROMIUM MOCK: forest sprites/placement, styles, art, auto/manual routes, undo, Photon OK')
   browser.close()
 if __name__=='__main__':main()

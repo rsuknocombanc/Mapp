@@ -10,13 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate map and route prototype
+      - name: Validate map, routes and forest illustration
         run: |
           python3 tests/check_contract.py
           node --check assets/app.js
+          node --check assets/forest.js
           node tests/test_route_logic.js
+          node tests/test_forest_logic.js
           python3 - <<'PY'
           from pathlib import Path
-          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0004.md','docs/REQUERIMIENTOS/MAP-0005.md','docs/DECISIONES/ADR-0004.md','docs/DECISIONES/ADR-0005.md','docs/PRUEBAS/UAT-MAP-0004.md','docs/PRUEBAS/UAT-MAP-0005.md']:
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md',
+          'docs/REQUERIMIENTOS/MAP-0004.md','docs/REQUERIMIENTOS/MAP-0005.md','docs/REQUERIMIENTOS/MAP-0007.md',
+          'docs/DECISIONES/ADR-0007.md','docs/PRUEBAS/UAT-MAP-0007.md']:
               assert Path(p).is_file(),p
           PY
