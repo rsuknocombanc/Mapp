@@ -1,5 +1,6 @@
-# MAP-0012 — Diseño técnico de política de visibilidad cartográfica
-**Versión del documento:** propuesta D0 · 2026-11-17
+# MAP-0012 — Diseño técnico de política de visibilidad cartográfica (D1)
+**Versión del documento:** propuesta **D1** · 2026-11-17
+**Historial de versiones:** D0 proponía pasajes peatonales urbanos en zoom 16+ y ocultar límites administrativos subnacionales; D1 sustituye esos puntos por solicitud expresa del usuario. El resto de D0 se mantiene.
 **Estado:** PROPUESTO / PENDIENTE APROBACIÓN TÉCNICA (no implementado)
 **Referencia:** `docs/REQUERIMIENTOS/MAP-0012.md`, issue #5, Mapp v0.7.0, PR #1.
 
@@ -41,14 +42,15 @@ Se considera **en una fase posterior, con aprobación independiente**, generar u
 | `road_motorway`, `road_trunk_primary`, `road_secondary_tertiary` y equivalentes de puente/túnel | Mantener | Carreteras y conexiones clave, tinta simplificada |
 | `road_minor` y puentes/túneles de clase `minor` | Zoom | z14+; conservar calles para contar giros |
 | `road_service_track`, `bridge_service_track`, `tunnel_service_track` | **Dividir por atributo** | `class=track` desde z11, `class=service` desde z15; no esconder huellas 4x4 |
-| `road_path_pedestrian` y equivalentes de puente/túnel | **Dividir por atributo** | `class=path` desde z12, `class=pedestrian` desde z16 |
+| `road_path_pedestrian` y equivalentes de puente/túnel | **Dividir por atributo** | `class=path` (sendero rural) desde z12; **`class=pedestrian` oculto en todo zoom** incluso puentes y túneles. No excluir universalmente `subclass=footway` sin verificar que no sea sendero natural. |
 | `road_motorway_link`, `road_link` y equivalentes | Zoom | z13+ (conectores importantes), sin casing innecesario |
 | IDs `*_casing`, `*_hatching`, `road_area_pattern` | Ocultar | Suprimir duplicación de dibujo, conservar vía estructural |
 | `road_major_rail`, `road_transit_rail` y puentes/túneles ferroviarios | Ocultar inicialmente | Revisar si es una referencia útil para zonas remotas |
 | `road_one_way_arrow`, `road_one_way_arrow_opposite` | Zoom | z17+; posible orientación urbana, no vista regional |
 | `building`, `building-3d` | Ocultar | Mantener 3D desactivado; edificios 2D detallados requieren capa nueva y aprobación aparte |
-| `boundary_3` | Ocultar | Límite administrativo subnacional |
+| `boundary_3` | Ocultar | Contiene niveles administrativos 3–6; no incluye comunas de Chile (`admin_level=8`) |
 | `boundary_2`, `boundary_disputed` | Mantener discretos | Contexto internacional y tratamiento neutral de líneas disputadas |
+| **`mapp-commune-boundary` (nueva)** | **Agregar desde z11** | `openmaptiles` / `boundary`, filtro `admin_level=8` según OSM Chile; línea café grisáceo delgada y discontinua, sin rellenos; validar disponibilidad real en teselas |
 | `water_name_point_label`, `water_name_line_label` | Mantener | Sin piscinas; prioridades hidrográficas |
 | `poi_r20`, `poi_r7`, `poi_r1`, `poi_transit` | Ocultar | Comercio genérico no relevante; POIs curados se diseñan aparte |
 | `highway-name-major`, `highway-shield-non-us` | Mantener | Identificación de carreteras, z12 y z8 respectivamente |
@@ -75,14 +77,26 @@ La fuente OpenMapTiles `water` expone `class = ocean | river | pond | lake | doc
 
 Liberty `road_service_track` combina clases `service` y `track`, y `road_path_pedestrian` mezcla `path` y `pedestrian`. Filtrar o retrasar el ID completo podría ocultar huellas rurales, contraviniendo el requisito de navegación off-road.
 
-Plan: reutilizar fuente `openmaptiles`/`transportation` y clonar **solo las capas mixtas** con filtros de clase distintos, conservando `brunnel` y demás restricciones originales. Definir zoom por clase, evitar duplicados y mantener el orden respecto a rutas/etiquetas. Conservar puentes y túneles de `track` y `path`, distinguiendo trazo y acceso. `road_minor` permanece desde z14 para contar cruces.
+Plan: reutilizar fuente `openmaptiles`/`transportation` y clonar **solo las capas mixtas** con filtros de clase distintos, conservando `brunnel` y demás restricciones originales. Definir zoom por clase, evitar duplicados y mantener el orden respecto a rutas/etiquetas. Conservar puentes y túneles de `track` y `path`, distinguiendo trazo y acceso. **Excluir `class=pedestrian` de todas las variantes de vía/puente/túnel, sin reactivarla por zoom**. Verificar antes de excluir `subclass=footway`: puede indicar sendero rural. `road_minor` permanece desde z14 para contar cruces.
+
+## 5A. Límites comunales y exclusión peatonal — revisión D1
+
+Chile utiliza `boundary=administrative` con `admin_level=8` para las comunas. La capa Liberty `boundary_3` solo cubre niveles 3–6 y por sí sola **no puede mostrar límites comunales**. OpenMapTiles define el campo `admin_level` en la fuente vectorial `boundary`; no se ha verificado que las teselas de OpenFreeMap sirvan geometrías comunales a escala suficiente.
+
+**Propuesta técnica específica:**
+- Crear `mapp-commune-boundary` como capa MapLibre `line` con `source:'openmaptiles'`, `source-layer:'boundary'`, `minzoom:11` y filtro `['all',['==',['get','admin_level'],8],['!=',['get','maritime'],1]]`. Las fronteras disputadas no se suprimen de modo engañoso; conservar su tratamiento diferenciado.
+- Trazo de propuesta: `line-color:'#806349'`, `line-opacity:.38`, `line-width:1`, `line-dasharray:[2,3]`, `line-blur:.2`. **Solo límites lineales; no colorear polígonos completos de comunas.** Debe quedar por debajo de caminos, etiquetas, rutas y vehículo, pero por encima del lavado del papel.
+- Test de cobertura con `querySourceFeatures('openmaptiles',{sourceLayer:'boundary'})` sobre límites comunales reales en Santiago, seguido de `queryRenderedFeatures`; no interpretar una vista sin límite en pantalla como ausencia de datos del proveedor. Si las tiles no contienen `admin_level=8`, documentar el bloqueo y solicitar aprobación por separado para fuente administrativa verificable y licencia compatible (por ejemplo, dataset oficial), sin inventar geometría.
+- Filtrar `class=pedestrian` en `road_path_pedestrian`, `bridge_path_pedestrian`, `tunnel_path_pedestrian` y demás capas que efectivamente lo dibujen. Conservar `class=path` y `class=track`. Los objetos se ocultan del **render**, no de OpenStreetMap ni del servicio de rutas.
+
+Esta regla se limita inicialmente a Chile; los significados de `admin_level` varían internacionalmente.
 
 ## 6. Orden de pintura y estabilidad del estilo
 
 1. Papel `background`.
 2. Superficies naturales y agua (sin piscinas).
 3. Veladuras de acuarela, bosques y símbolos forestales.
-4. Caminos por clase, puentes/túneles y nombres viales relevantes.
+4. Límites comunales finos discontinuos, luego caminos por clase, puentes/túneles y nombres viales relevantes.
 5. Localidades, nombres naturales y agua.
 6. Ruta dibujada, waypoints y vehículo / controles de interfaz.
 
@@ -93,10 +107,10 @@ Reutilizar la misma máscara de clase para pintura base y overlays. En `artStyle
 | Escala | Cartografía visible | Cartografía oculta/diferida |
 | --- | --- | --- |
 | z0–9, vista regional | Papel, masa forestal, mar/costa, lagos/embalses, ciudades, carretera troncal, fronteras internacionales | Piscinas, estanques menores, edificaciones, cancha, pasajes, servicios, ferrocarril |
-| z10–12, exploración | + secundarias, pueblos, track rural, ríos y agua nombrada | Piscinas, pond, residencial, nombres de calles pequeñas |
+| z10–12, exploración | + secundarias, pueblos, track rural, ríos y agua nombrada, límites comunales desde z11 | Piscinas, pond, residencial, **pasajes peatonales**, nombres de calles pequeñas |
 | z13–14, aproximación | + caminos y senderos relevantes, locales a z14, pond desde z14 | Piscinas, detalles de canchas, edificios |
-| z15–16, orientación | + service y pasajes, etiquetas viales menores, caminos peatonales desde z16 | Piscinas, edificios 3D y trama comercial |
-| z17+, detalle | + flechas de sentido, rótulos precisos, accesos viales | Piscinas, edificios 3D, POI comerciales; 2D solo mediante aprobación aparte |
+| z15–16, orientación | + vías vehiculares de servicio, etiquetas viales menores, senderos rurales | Piscinas, **pasajes peatonales urbanos**, edificios 3D y trama comercial |
+| z17+, detalle | + flechas de sentido, rótulos precisos, accesos viales y límites comunales | Piscinas, **pasajes peatonales urbanos**, edificios 3D, POI comerciales; 2D solo mediante aprobación aparte |
 
 Los umbrales son **propuestos**; la aprobación técnica puede modificarlos antes de implementar.
 
@@ -117,7 +131,7 @@ Se descarta por ahora migrar inmediatamente las 111 capas a un estilo nuevo inde
 **Automáticas**
 - Dada una entidad `water.class=swimming_pool`, ninguna de las cinco capas de agua debe representarla; ríos, lagos, océanos y embalses permanecen.
 - `pond` oculto a zoom 12 y visible a 15; pruebas expresiones zoom con Style Spec oficial.
-- `track`/ `path` visibles a la escala aprobada; `service`/`pedestrian` diferidos, incluyendo puente/túnel; no duplicar geometrías.
+- `track`/ `path` visibles a la escala aprobada; `service` diferido y `pedestrian` oculto a cualquier zoom, incluyendo puente/túnel; no duplicar geometrías.
 - Capas sobrepuestas (acuarelas) nunca recrean objetos ocultos del estilo base.
 - La ruta OSRM demo y el modo trazado libre usan sus fuentes y capas originales; búsquedas, GPS e interacción conservados.
 - `applyPolicy` idempotente y seguro si una capa no existe; sin errores WebGL por filtros rechazados.
@@ -127,6 +141,8 @@ Se descarta por ahora migrar inmediatamente las 111 capas a un estilo nuevo inde
 - Santiago z15: desaparecen rectángulos azul petróleo de piscinas, no desaparecen canales/ríos.
 - Santiago z9–11: desaparece saturación residencial, comercial y deportiva.
 - Farellones/Cajón del Maipo z12–16: `track` y senderos siguen visibles; camino asfaltado, accesos y ruta se leen sin confusión.
+- Santiago z11–16: las líneas comunales se dibujan como trazos tenues discontinuos reales, sin reconfigurar las fronteras internacionales; si no hay nivel 8 en tiles, registrar dependencia externa.
+- Santiago z13–18: `class=pedestrian` no aparece en ninguno de los niveles, ni en puentes y túneles. Los senderos naturales `class=path` sí permanecen.
 - Embalse del Yeso y costa z9–14: agua mayor permanece y mantiene paleta; etiquetas geográficas correctas.
 - Edge Windows y Safari iPhone: comparar imágenes antes/después, verificar tiempo de carga, desplazamiento y FPS. No afirmar mejoras de rendimiento sin medición; ocultar una capa no reduce necesariamente la descarga de tiles.
 - Revisar al menos un conjunto de filtros con `queryRenderedFeatures` real, sin exportar coordenadas personales.
