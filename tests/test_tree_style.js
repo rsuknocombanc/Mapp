@@ -3,7 +3,7 @@
 // Prevent the previous mock-only CI false green: zoom inside multiplication was rejected in Edge.
 const assert=require('node:assert/strict');
 const forest=require('../assets/forest.js');
-const {validateStyle}=require('@maplibre/maplibre-gl-style-spec');
+const {validateStyleMin:validateStyle}=require('@maplibre/maplibre-gl-style-spec');
 assert.equal(typeof validateStyle,'function','MapLibre official validator must be available');
 
 const iconSize=forest.treeIconSizeExpression();
