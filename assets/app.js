@@ -2,7 +2,7 @@
  * MAP-0004/5/6/7. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
-const APP_VERSION='0.6.0';
+const APP_VERSION='0.6.1';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
 const $=id=>document.getElementById(id);
 // Restrained but saturated palette from the user's hand-painted atlas reference.

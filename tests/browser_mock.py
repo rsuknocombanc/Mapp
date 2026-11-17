@@ -32,7 +32,13 @@ class FakeMap{
  getSource(id){return this._sources[id]}
  addSource(id,o){this._sources[id]={setData:d=>{this._sources[id].data=d},data:o.data}}
  getLayer(id){return this._style.layers.find(l=>l.id===id)}
- addLayer(o,before){const idx=this._style.layers.findIndex(x=>x.id===before);if(idx>=0)this._style.layers.splice(idx,0,o);else this._style.layers.push(o)}
+ addLayer(o,before){
+   if(o.id==='mapp-tree-symbols'){
+     const size=o.layout?.['icon-size'];
+     if(size?.[0]!=='interpolate'||JSON.stringify(size[2])!=='["zoom"]')throw Error('Mock: zoom expression must be top-level interpolate');
+   }
+   const idx=this._style.layers.findIndex(x=>x.id===before);if(idx>=0)this._style.layers.splice(idx,0,o);else this._style.layers.push(o);
+ }
  hasImage(n){return !!this.images[n]}
  addImage(n,im,opts){this.images[n]=im}
  updateImage(n,im){this.images[n]=im}
@@ -85,7 +91,7 @@ def run_test():
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
-  assert page.locator('#buildVersion').inner_text()=='v0.6.0'
+  assert page.locator('#buildVersion').inner_text()=='v0.6.1'
   assert 'Z12.0' in page.locator('#buildContext').inner_text()
   assert 'ATLAS' in page.locator('#buildContext').inner_text()
   assert page.get_by_text('Acuarela · Bosque · Tinta').count()==1

@@ -82,6 +82,13 @@ function generate(features,bounds,zoom,cap=420){
  if(out.length>cap)out.sort((a,b)=>a.properties.rank-b.properties.rank).splice(cap);
  return {type:'FeatureCollection',features:out};
 }
+// The camera expression MUST be top-level: MapLibre rejects zoom nested in multiplication.
+// Feature-specific scale is evaluated at each zoom stop to retain individual tree variation.
+function treeIconSizeExpression(){
+ const sized=factor=>['*',['get','scale'],factor];
+ return ['interpolate',['linear'],['zoom'],
+  6,sized(.34),9,sized(.42),12,sized(.55),15,sized(.68),18,sized(.82)];
+}
 function install(map,{maxDesktop=480,maxMobile=270,onStats=null}={}){
  if(!map?.getSource?.('openmaptiles'))return {enabled:false,reason:'Vector tile source not loaded'};
  const notify=(count)=>{try{if(typeof onStats==='function')onStats(count);}catch(_){}};
@@ -119,10 +126,11 @@ function install(map,{maxDesktop=480,maxMobile=270,onStats=null}={}){
    const before=firstRoad||map.getStyle().layers.find(l=>l.type==='symbol'&&!l.id.startsWith('mapp-'))?.id;
    map.addLayer({id:LAYER,type:'symbol',source:SOURCE,minzoom:6,layout:{
     'icon-image':['get','sprite'],'icon-anchor':'bottom',
-    'icon-size':['*',['get','scale'],['interpolate',['linear'],['zoom'],6,.34,9,.42,12,.55,15,.68,18,.82]],
+    'icon-size':treeIconSizeExpression(),
     'icon-rotate':['get','rotation'], 'icon-allow-overlap':true,'icon-ignore-placement':true,
     'icon-rotation-alignment':'map','icon-pitch-alignment':'map'
    },paint:{'icon-opacity':.97}},before);
+   if(!map.getLayer(LAYER))throw Error('MapLibre rechazó la capa ilustrada de pinos');
    ready=true;schedule(10);
   }catch(e){console.warn('Mapp árboles: no se pudo instalar',e);notify(0);}
  }
@@ -135,7 +143,7 @@ function install(map,{maxDesktop=480,maxMobile=270,onStats=null}={}){
  map.on('sourcedata',e=>{if(e?.sourceId==='openmaptiles'&&e.isSourceLoaded){version++;schedule(140)}});
  return {enabled:true,refresh:()=>{lastKey='';schedule(0)},dispose(){disposed=true;clearTimeout(timer)}};
 }
-const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,install};
+const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,treeIconSizeExpression,install};
 root.MappForest=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

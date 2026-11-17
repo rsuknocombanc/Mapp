@@ -43,3 +43,9 @@
 - Densidad visible ampliada sobre bosques (~32 px frente a 72 px), cobertura adicional de praderas/parques más dispersa, límite móvil/escritorio y posiciones geográficas estables.
 - Papel cálido, bosque oliva intenso, agua azul petróleo oscuro y caminos óxido; rutas y búsqueda conservadas.
 - Pruebas estáticas, geometría y Chromium simulando MapLibre superadas; Safari/Edge con teselas reales pendientes.
+
+## [0.6.1] — Corrección del render de pinos (MAP-0010)
+- Se reestructura `icon-size` como expresión `interpolate(zoom)` de nivel superior; conserva multiplicadores individuales para variar tamaño.
+- Se verifica la existencia real de `mapp-tree-symbols` tras registrar la capa.
+- Se agrega test en CI usando MapLibre Style Spec oficial, con caso inválido de regresión; el mock también detecta anidamiento ilegal.
+- Número de versión visible actualizado; UAT real pendiente y `main` intacta.

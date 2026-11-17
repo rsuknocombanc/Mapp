@@ -39,5 +39,10 @@ Se sustituyó la iconografía sintética de v0.5 por 8 dibujos transparentes ori
 Paleta única: papel #EFDEB9, bosque #6B8652, agua petróleo #265D65, caminos #9B5737; se elimina el selector de temas y se conserva panel de arte (Acuarela · Bosque · Tinta) como una definición. Buscador, GPS, rutas automáticas OSRM y trazado libre sin modificaciones funcionales; versión y contador siguen visibles arriba derecha.
 Pruebas locales exitosas: node --check, contrato UI, pruebas geométricas/presupuestos y rutas, Chromium simulado con **decodificación real del atlas PNG** y MapLibre/OSRM/Photon simulados. **Sin UAT visual en Edge y Safari con teselas reales**, ni cifras de rendimiento. No fusionar main antes de la validación del usuario.
 
+## 2026-11-17 — Corrección autorizada v0.6.1 / MAP-0010
+El usuario suministró `mapp_diagnostico_render.json`: en v0.6.0, `sourceExists=true`, `spriteExists=true`, `layerExists=false`, 22 pinos generados y 8 dentro de la vista en muestra de diagnóstico. Con el error de MapLibre de Edge se determinó causalidad: `zoom` aparecía dentro del producto de `icon-size` en vez de usarse como entrada de un `interpolate` de nivel superior. El motor rechazaba el `addLayer`, pero los tests mock lo permitían, por eso CI era verde sin render real.
+Usuario aprobó expresamente corregir y publicar v0.6.1. Solución: helper `treeIconSizeExpression()` hace interpolación por zoom top-level con multiplicación de escala por parada, conserva variación de tamaño; después del `addLayer` se comprueba que realmente exista. Se añade test contra `@maplibre/maplibre-gl-style-spec@26.4.4` con control negativo de la expresión antigua, más mock que exige top-level; documentación MAP-0010, ADR-0010 y UAT.
+Pruebas CI y Pages se verificarán por SHA; no afirmar validación real Safari hasta UAT. Main se mantiene estable y el PR #1 abierto.
+
 ## Continuidad
-Revisar PR #1 v0.6.0 MAP-0009, CI y Pages. UAT visual Edge/Safari: comparar árboles/colores y contador con maqueta, comprobar rutas/labels, medir rendimiento. main estable, merge solo con aprobación.
+Revisar PR #1 v0.6.1 MAP-0010: verificar GitHub CI con MapLibre Style Spec, Pages y UAT real en Edge/Safari para comprobar layerExists, renderizados y árbol visible. Mantener main sin merge hasta aceptación.
