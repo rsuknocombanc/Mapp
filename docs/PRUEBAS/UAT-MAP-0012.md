@@ -1,5 +1,5 @@
 # PLAN DE PRUEBAS MAP-0012 — Limpieza cartográfica
-Fecha: 2026-11-17. Estado: PROPUESTO, sin ejecución.
+Fecha: 2026-11-17. Estado: PLAN APROBADO CON D1; pruebas SIN EJECUTAR, desarrollo NO AUTORIZADO.
 | ID | Prueba | Resultado esperado |
 | --- | --- | --- |
 | P01 | `water.class=swimming_pool` en fuente real | 0 objetos renderizados en water y 4 overlays |

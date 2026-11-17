@@ -1,7 +1,7 @@
 # MAP-0012 — Diseño técnico de política de visibilidad cartográfica (D1)
-**Versión del documento:** propuesta **D1** · 2026-11-17
+**Versión del documento:** **D1 APROBADO** · 2026-11-17
 **Historial de versiones:** D0 proponía pasajes peatonales urbanos en zoom 16+ y ocultar límites administrativos subnacionales; D1 sustituye esos puntos por solicitud expresa del usuario. El resto de D0 se mantiene.
-**Estado:** PROPUESTO / PENDIENTE APROBACIÓN TÉCNICA (no implementado)
+**Estado:** DISEÑO TÉCNICO APROBADO; IMPLEMENTACIÓN NO AUTORIZADA (sin código ni publicación)
 **Referencia:** `docs/REQUERIMIENTOS/MAP-0012.md`, issue #5, Mapp v0.7.0, PR #1.
 
 ## 1. Baseline verificado
@@ -149,7 +149,7 @@ Se descarta por ahora migrar inmediatamente las 111 capas a un estilo nuevo inde
 
 ## 10. Comp puertas y despliegue
 
-Estado actual: solo criterios funcionales aprobados; **arquitectura, umbrales y módulo son propuestas**. El diseño debe recibir aprobación específica. Posteriormente autorización de implementación. Se trabajaría en `feature/bootstrap-vintage-map` / PR #1, CI con validador real, preview automatizada `gh-pages` solo tras checks verdes, UAT y, finalmente, aprobación de merge. `main` permanece estable.
+Estado actual: criterios funcionales y diseño técnico **D1 APROBADOS**. Se requiere autorización explícita e independiente antes de implementar, probar la función y publicar preview. Se trabajaría en `feature/bootstrap-vintage-map` / PR #1, CI con validador real, preview automatizada `gh-pages` solo tras checks verdes, UAT y, finalmente, aprobación de merge. `main` permanece estable.
 
 ## Apéndice A — Inventario de las 111 capas del estilo Liberty de referencia
 
@@ -172,3 +172,6 @@ Este apéndice indica IDs exactos en el repositorio de referencia; es obligatori
 | `transportation_name` | 6 | `highway-name-path`, `highway-name-minor`, `highway-name-major`, `highway-shield-non-us`, `highway-shield-us-interstate`, `road_shield_us` |
 | `aerodrome_label` | 1 | `airport` |
 | `place` | 9 | `label_other`, `label_village`, `label_town`, `label_state`, `label_city`, `label_city_capital`, `label_country_3`, `label_country_2`, `label_country_1` |
+
+## 11. Decisión formal de aprobación D1
+Fecha: 2026-11-17. El usuario reiteró dos veces: «Apruebo el diseño técnico D1 de MAP-0012, incluyendo ocultar pasajes peatonales y mostrar límites comunales. Registra la aprobación; la implementación requiere mi autorización posterior.» La doble confirmación se considera **una sola aprobación**, sin permisos de implementación implícitos. Se aprueba el enfoque de módulo declarativo de visibilidad piloto sobre Liberty, reglas D1 (pasajes urbanos `pedestrian` ocultos, senderos `path` y huellas `track` conservados, límites comunales chilenos `admin_level=8` desde z11), umbrales y matriz de pruebas. Si no hay geometría comunal en los tiles, informar bloqueo y obtener aprobación adicional para fuente cartográfica; nunca inventar fronteras. **Siguiente compuerta: AUTORIZACIÓN DE IMPLEMENTACIÓN.** Sin cambios en la aplicación, Pages ni main.
