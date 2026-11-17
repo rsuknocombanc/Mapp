@@ -44,5 +44,8 @@ El usuario suministró `mapp_diagnostico_render.json`: en v0.6.0, `sourceExists=
 Usuario aprobó expresamente corregir y publicar v0.6.1. Solución: helper `treeIconSizeExpression()` hace interpolación por zoom top-level con multiplicación de escala por parada, conserva variación de tamaño; después del `addLayer` se comprueba que realmente exista. Se añade test contra `@maplibre/maplibre-gl-style-spec@26.4.4` con control negativo de la expresión antigua, más mock que exige top-level; documentación MAP-0010, ADR-0010 y UAT.
 Pruebas CI y Pages se verificarán por SHA; no afirmar validación real Safari hasta UAT. Main se mantiene estable y el PR #1 abierto.
 
+## 2026-11-17 — v0.7.0 MAP-0011
+Usuario aprobó la variante 1 para vista regional/media y la variante 2 para zoom cercano, y después autorizó explícitamente la implementación. Se actualiza muestreo forestal geográfico con densidad por nivel de zoom y ruido suave determinista de agrupación; pinos más pequeños y frecuentes en zoom general, más grandes/separados en zoom cercano. Bordes de bosque, grass y park se representan con veladuras difusas y trazo reducido, conservando rutas por delante. Presupuestos máximos 320 móvil/600 escritorio (detalle menos). Pruebas Node de geometría/LOD y validador oficial MapLibre en CI; UAT real Edge/Safari pendiente. main sin merge.
+
 ## Continuidad
-Revisar PR #1 v0.6.1 MAP-0010: verificar GitHub CI con MapLibre Style Spec, Pages y UAT real en Edge/Safari para comprobar layerExists, renderizados y árbol visible. Mantener main sin merge hasta aceptación.
+Revisar PR #1 v0.7.0 MAP-0011: verificar CI y Pages, UAT Z9 y Z15 y rendimiento Edge/Safari, rutas y búsqueda. No fusionar main hasta aprobación.

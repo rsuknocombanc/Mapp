@@ -91,7 +91,7 @@ def run_test():
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
-  assert page.locator('#buildVersion').inner_text()=='v0.6.1'
+  assert page.locator('#buildVersion').inner_text()=='v0.7.0'
   assert 'Z12.0' in page.locator('#buildContext').inner_text()
   assert 'ATLAS' in page.locator('#buildContext').inner_text()
   assert page.get_by_text('Acuarela · Bosque · Tinta').count()==1
@@ -107,7 +107,7 @@ def run_test():
   assert page.evaluate('Object.keys(window.__testMap.images).length')==24
   assert page.evaluate('window.__testMap.getLayer("mapp-tree-symbols").type')=='symbol'
   assert page.evaluate('window.__testMap._style.layers.findIndex(x=>x.id==="mapp-tree-symbols") < window.__testMap._style.layers.findIndex(x=>x.id==="road_motorway")')
-  assert 30<page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=270
+  assert 30<page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=320
   assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data.length')==176*216*4
   assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data[3*176*4+40*4+3]') in range(256)
   # A hand-drawn double contour, with no repeated polygon wallpaper texture.

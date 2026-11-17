@@ -49,3 +49,9 @@
 - Se verifica la existencia real de `mapp-tree-symbols` tras registrar la capa.
 - Se agrega test en CI usando MapLibre Style Spec oficial, con caso inválido de regresión; el mock también detecta anidamiento ilegal.
 - Número de versión visible actualizado; UAT real pendiente y `main` intacta.
+
+## [0.7.0] — Bosques por zoom y contorno acuarelado (MAP-0011)
+- Vista regional: pinos pequeños y frecuentes, arboledas con claros por ruido de densidad espacial.
+- Vista cercana: pinos de mayor tamaño y composición expresiva.
+- Bordes de bosque, pasto y parques suavizados con pigmento difuso; papel, agua, rutas y buscador conservados.
+- UAT visual y rendimiento real pendientes.

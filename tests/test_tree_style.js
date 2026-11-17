@@ -9,7 +9,7 @@ assert.equal(typeof validateStyle,'function','MapLibre official validator must b
 const iconSize=forest.treeIconSizeExpression();
 assert.equal(iconSize[0],'interpolate','zoom must be on the top-level interpolate');
 assert.deepEqual(iconSize[2],['zoom']);
-const expected=[6,9,12,15,18],multipliers=[.34,.42,.55,.68,.82];
+const expected=[6,9,12,14,16,18],multipliers=[.17,.26,.40,.57,.78,.94];
 for(let i=0;i<expected.length;i++){
   assert.equal(iconSize[3+i*2],expected[i]);
   assert.deepEqual(iconSize[4+i*2],['*',['get','scale'],multipliers[i]]);

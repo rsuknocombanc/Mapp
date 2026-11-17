@@ -49,11 +49,24 @@ function bestCover(lon,lat,shapes){let coverage=0;
  }
  return coverage;
 }
+// Zoom-adaptive, world-anchored canopy composition, without repeated wallpapers.
+function forestLevel(z){return z<12?'regional':z<14?'middle':'close';}
+function cellSpacing(lod){return lod<12?23:lod<14?32:53;}
+function smoothNoise(x,y,seed){
+ const ix=Math.floor(x),iy=Math.floor(y),dx=x-ix,dy=y-iy;
+ const fx=dx*dx*(3-2*dx),fy=dy*dy*(3-2*dy);
+ const a=hash(ix,iy,seed)*(1-fx)+hash(ix+1,iy,seed)*fx;
+ const b=hash(ix,iy+1,seed)*(1-fx)+hash(ix+1,iy+1,seed)*fx;
+ return a*(1-fy)+b*fy;
+}
+function canopyCluster(ix,iy){
+ return .44*smoothNoise(ix/5.4,iy/5.4,79)+.56*smoothNoise(ix/16.3,iy/16.3,101);
+}
 function getGrid(bounds,zoom){
  const lod=Math.max(6,Math.min(17,Math.floor(zoom)));
  // Previous 72px spacing plus low coverage yielded only 4 trees at Z12.3.
  // This is screen-space ~32px spacing at integer zoom, anchored in world coordinates.
- const step=32/(512*Math.pow(2,lod));let west=bounds.getWest(),east=bounds.getEast();if(east<west)east+=360;
+ const step=cellSpacing(lod)/(512*Math.pow(2,lod));let west=bounds.getWest(),east=bounds.getEast();if(east<west)east+=360;
  const top=mercY(bounds.getNorth()),bottom=mercY(bounds.getSouth());
  return {lod,step,minX:Math.floor(mercX(west)/step)-1,maxX:Math.ceil(mercX(east)/step)+1,
   minY:Math.floor(top/step)-1,maxY:Math.ceil(bottom/step)+1};
@@ -70,12 +83,18 @@ function generate(features,bounds,zoom,cap=420){
   const dx=.12+hash(ix,iy,11)*.76,dy=.12+hash(ix,iy,19)*.76;
   const pt=fromWorld((ix+dx)*grid.step,(iy+dy)*grid.step);
   const coverage=bestCover(pt[0],pt[1],shapes);
-  if(coverage===0||hash(ix,iy,31)>coverage)continue;
+  if(coverage===0)continue;
+  const cluster=canopyCluster(ix,iy);
+  const occupancy=Math.min(.99,coverage*(.23+1.70*cluster));
+  if(hash(ix,iy,31)>occupancy)continue;
   const variant=Math.min(COUNT-1,Math.floor(hash(ix,iy,37)*COUNT));
   const tone=Math.min(TONES-1,Math.floor(hash(ix,iy,39)*TONES));
   const rank=hash(ix,iy,67);
-  const scale=.72+hash(ix,iy,41)*.56; // approved range ~70–130 %
-  out.push({type:'Feature',id:`${grid.lod}:${ix}:${iy}`,properties:{sprite:`mapp-pine-${variant}-${tone}`,scale,rotation:(hash(ix,iy,53)-.5)*7,rank},geometry:{type:'Point',coordinates:pt}});
+  const level=forestLevel(zoom);
+  const base=level==='regional'?.53:level==='middle'?.61:.69;
+  const range=level==='regional'?.48:level==='middle'?.67:.91;
+  const scale=base+range*hash(ix,iy,41)+.11*(cluster-.5);
+  out.push({type:'Feature',id:`${grid.lod}:${ix}:${iy}`,properties:{sprite:`mapp-pine-${variant}-${tone}`,scale,rotation:(hash(ix,iy,53)-.5)*9,rank},geometry:{type:'Point',coordinates:pt}});
  }}
  // Spatially unbiased selection when too many symbols, unlike the previous
  // row-order early cutoff that overloaded only the left edge of the viewport.
@@ -87,13 +106,15 @@ function generate(features,bounds,zoom,cap=420){
 function treeIconSizeExpression(){
  const sized=factor=>['*',['get','scale'],factor];
  return ['interpolate',['linear'],['zoom'],
-  6,sized(.34),9,sized(.42),12,sized(.55),15,sized(.68),18,sized(.82)];
+  6,sized(.17),9,sized(.26),12,sized(.40),14,sized(.57),16,sized(.78),18,sized(.94)];
 }
-function install(map,{maxDesktop=480,maxMobile=270,onStats=null}={}){
+function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
  if(!map?.getSource?.('openmaptiles'))return {enabled:false,reason:'Vector tile source not loaded'};
  const notify=(count)=>{try{if(typeof onStats==='function')onStats(count);}catch(_){}};
  let disposed=false,timer=null,lastKey='',version=0,ready=false;
- const limit=()=>Math.max(80,Math.min(maxDesktop,(map.getCanvas().clientWidth||800)<650?maxMobile:maxDesktop));
+ const limit=()=>{const small=(map.getCanvas().clientWidth||800)<650;
+   const max=small?maxMobile:maxDesktop;
+   return Math.max(80,Math.floor(max*(forestLevel(map.getZoom())==='close'?.8:1)));};
  function refresh(){if(disposed||!ready)return;
   try{
    const b=map.getBounds(),zoom=map.getZoom(),grid=getGrid(b,zoom);
@@ -143,7 +164,7 @@ function install(map,{maxDesktop=480,maxMobile=270,onStats=null}={}){
  map.on('sourcedata',e=>{if(e?.sourceId==='openmaptiles'&&e.isSourceLoaded){version++;schedule(140)}});
  return {enabled:true,refresh:()=>{lastKey='';schedule(0)},dispose(){disposed=true;clearTimeout(timer)}};
 }
-const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,treeIconSizeExpression,install};
+const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,forestLevel,cellSpacing,canopyCluster,treeIconSizeExpression,install};
 root.MappForest=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

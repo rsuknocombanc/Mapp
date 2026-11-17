@@ -1,4 +1,4 @@
-# Mapp v0.6.1 — Atlas de acuarela, bosque ilustrado y tinta
+# Mapp v0.7.0 — Atlas de acuarela, bosque ilustrado y tinta
 
 Prototipo web de mapas personalizados. Fondo de papel, vegetación oliva de pigmento más concentrado, agua azul petróleo y contornos de pincel seco simulados con dos pasadas de tinta (no acuarela vectorizada de alta fidelidad); sin DEM, 3D ni edificios extruidos. Conserva mapa real de OpenStreetMap/OpenFreeMap, búsqueda Photon, GPS opcional y marcador Jimny.
 
@@ -40,3 +40,6 @@ Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`,
 - Pruebas: Python contrato, Node sintaxis, geografía y rutas, Chromium simulado con **PNG auténtico** decodificado. UAT pendiente sobre teselas reales Edge y Safari; no se ha comprobado el rendimiento real ni la equivalencia total con la maqueta aprobada.
 ## Corrección v0.6.1 — pinos visibles
 Se corrige la expresión `icon-size` de la capa MapLibre `mapp-tree-symbols`: el zoom debe ser el operador externo de `interpolate`, con el multiplicador individual `scale` dentro de cada parada. En v0.6.0 los pinos estaban generados y el atlas cargado, pero MapLibre rechazaba la capa; el contador no equivalía a árboles visibles. Se añade prueba con el validador oficial MapLibre Style Spec además de las pruebas simuladas. Ver MAP-0010 y ADR-0010. Safari y Edge reales pendientes de UAT tras esta publicación.
+
+## v0.7.0: composición pictórica por nivel de zoom
+Zoom regional con pinos finos, densos y agrupados mediante ruido suave georreferenciado; zoom cercano con tamaños mayores y claros. Contornos forestales, pastos y parques suavizados mediante veladuras `line-blur`, conservando caminos, rutas y coordenadas. Requiere UAT Edge/Safari con cartografía real.

@@ -20,7 +20,7 @@ jobs:
           node --check tests/test_tree_style.js
           python3 - <<'PY'
           from pathlib import Path
-          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0007.md','docs/REQUERIMIENTOS/MAP-0008.md','docs/REQUERIMIENTOS/MAP-0009.md','docs/DECISIONES/ADR-0009.md','docs/PRUEBAS/UAT-MAP-0009.md','docs/REQUERIMIENTOS/MAP-0010.md','docs/DECISIONES/ADR-0010.md','docs/PRUEBAS/UAT-MAP-0010.md','assets/trees/watercolor-atlas.png']:
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0007.md','docs/REQUERIMIENTOS/MAP-0008.md','docs/REQUERIMIENTOS/MAP-0009.md','docs/DECISIONES/ADR-0009.md','docs/PRUEBAS/UAT-MAP-0009.md','docs/REQUERIMIENTOS/MAP-0010.md','docs/DECISIONES/ADR-0010.md','docs/PRUEBAS/UAT-MAP-0010.md','docs/REQUERIMIENTOS/MAP-0011.md','docs/DECISIONES/ADR-0011.md','docs/PRUEBAS/UAT-MAP-0011.md','assets/trees/watercolor-atlas.png']:
               assert Path(p).is_file(),p
           PY
       - name: Validate tree layer using official MapLibre style specification
