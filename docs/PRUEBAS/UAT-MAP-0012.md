@@ -26,3 +26,9 @@ Sin resultados de estas pruebas se mantiene estado PENDIENTE UAT. Nunca confundi
 
 ## Evidencia y limitaciones
 Se ejecutarán pruebas unitarias de filtros y capas, restauración/idempotencia y validación oficial MapLibre. Una simulación de provider no certifica cobertura real de límites comunales, ni ausencia de rectángulos azules por datos incorrectamente clasificados, ni FPS en Safari. Para P16/P17, sobre una frontera comunal real usar diagnóstico `window.MappLayerPolicy.inspectCommuneCoverage(map)` después de cargar tiles; `not-observed-in-current-tiles` NO demuestra ausencia global. P01–P19 requieren UAT antes de cerrar.
+
+## Ejecución CI y preview (17-11-2026)
+- `tests/check_contract.py`, `tests/test_route_logic.js`, `tests/test_forest_logic.js`, `tests/test_layer_policy.js`: ejecutados en CI [44197653532](https://github.com/rsuknocombanc/Mapp/actions/runs/44197653532), **PASS**.
+- `tests/test_tree_style.js`, `tests/test_policy_style.js`: validador oficial `@maplibre/maplibre-gl-style-spec@26.4.4`, incluyendo control negativo, **PASS**.
+- [Pages 44197870495](https://github.com/rsuknocombanc/Mapp/actions/runs/44197870495) **SUCCESS** para commit `801fa5941407ec452b401a6e2890b123e4ba1897`, preview v0.8.0.
+- **P01–P19 permanecen pendientes de comprobación visual/funcional REAL en Edge/Safari**; tests de lógica acreditan expresiones/código, no cobertura efectiva de `boundary.admin_level=8` ni rendimiento Safari. No afirmar UAT ejecutada con cartografía real.
