@@ -24,7 +24,7 @@ function mapFixture(){
   style:o,
   getStyle(){return this.style},getSource(id){return this.style.sources[id]},
   getLayer(id){return this.style.layers.find(l=>l.id===id)},
-  setFilter(id,v){this.getLayer(id).filter=v},
+  setFilter(id,v){const layer=this.getLayer(id);if(v===undefined||v===null)delete layer.filter;else layer.filter=v},
   setLayoutProperty(id,k,v){const l=this.getLayer(id);l.layout??={};if(v===undefined)delete l.layout[k];else l.layout[k]=v},
   setPaintProperty(id,k,v){const l=this.getLayer(id);l.paint??={};if(v===undefined)delete l.paint[k];else l.paint[k]=v},
   setLayerZoomRange(id,a,b){const l=this.getLayer(id);l.minzoom=a;l.maxzoom=b},

@@ -160,7 +160,7 @@ function restorePolicy(map){
  for(const id of st.added.slice().reverse()){if(getLayer(map,id))map.removeLayer(id);}
  for(const [id,old] of st.original){
   if(!getLayer(map,id))continue;
-  map.setFilter(id,clone(old.filter)||null);
+  map.setFilter(id,old.filter===undefined?undefined:clone(old.filter));
   map.setLayerZoomRange(id,old.minzoom,old.maxzoom);
   map.setLayoutProperty(id,'visibility',old.visibility);
   map.setPaintProperty(id,'fill-opacity',clone(old.fillOpacity));

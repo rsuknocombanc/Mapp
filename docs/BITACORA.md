@@ -59,5 +59,8 @@ El usuario envía dos veces la misma aprobación: «Apruebo el diseño técnico 
 ## 2026-11-17 — MAP-0012 implementación AUTORIZADA v0.8.0 (pendiente CI/UAT)
 El usuario autoriza expresamente: «Autorizo implementar MAP-0012 según el diseño D1 aprobado, ejecutar pruebas y publicar la vista previa. No autorizo fusionar a main.» Se desarrolla solo en rama del PR #1. Módulo declarativo de visibilidad con IDs Liberty, exclusión de piscinas sobre cinco capas y ocultación de pond hasta z14 por top-level step, filtros y escala de service/track y path/pedestrian, protección de senderos rurales, límites comunales `admin_level=8` sin inventar geodatos, rollback, verificación de estilo y pruebas Node. `main` queda estable; preview solo tras CI verde. Estado final de CI y Pages debe verificarse después del commit. UAT real Edge/Safari y comprobación de cobertura comunal pendientes.
 
+## 2026-11-17 — MAP-0012, ajuste test rollback tras primera ejecución CI
+Primera ejecución CI v0.8.0 detectó diferencia en rollback de filtros sin valor original: el mock conservaba `filter:null` en vez de la ausencia de la propiedad. Se corrige `restorePolicy` para pasar `undefined` cuando la capa originalmente no tenía filtro y se actualiza el fake para reflejar el contrato MapLibre (`setFilter(undefined)` elimina filtro). No se eliminan pruebas; se ejecutará de nuevo el validador oficial antes de publicar.
+
 ## Continuidad
 Revisar PR #1, MAP-0012 v0.8.0: implementación ahora AUTORIZADA, verificar CI y preview Pages, recoger UAT Edge/Safari de piscinas, senderos, límites comunales y rendimiento. No integrar a main sin nueva aprobación. Si faltan admin_level=8 en tiles, no inventar límites ni sumar fuente no aprobada.
