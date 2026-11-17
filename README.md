@@ -30,3 +30,5 @@ Consultar `AGENTS.md`, `METODOLOGIA.md`, `docs/CONTEXTO.md`, `docs/BITACORA.md`,
 - Árboles debajo de calles, etiquetas y rutas, sin interferir con GPS, Jimny, buscador y trazado. Fallback sin árboles si fallan imágenes/capas.
 - Cambiar Acuarela/Bosque/Tinta recolorea los árboles y conserva geometría de bosque.
 - Validar en Edge y Safari reales: este es un prototipo, no acuarela pintada manualmente ni cobertura global de alta precisión.
+## Identificador visual v0.5.1 (MAP-0008)
+Arriba a la derecha aparece la versión junto con estilo activo, zoom y número de pinos generados. Esto facilita comparar capturas de Edge y Safari: 0 pinos puede significar ausencia de polígonos compatibles, datos aún sin cargar o ausencia de candidatos en esa vista; un valor positivo significa símbolos generados, no necesariamente buena legibilidad. Es diagnóstico local y no comparte GPS.

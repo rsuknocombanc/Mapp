@@ -95,7 +95,7 @@ function sprite(index,theme){const c=document.createElement('canvas');c.width=11
  else drawPine(ctx,0,0,.89+(index%4)*.06,index,colors);
  return ctx.getImageData(0,0,112,152);
 }
-function install(map,{theme='acuarela',maxDesktop=240,maxMobile=130}={}){
+function install(map,{theme='acuarela',maxDesktop=240,maxMobile=130,onStats=null}={}){
  if(!map?.getSource?.('openmaptiles'))return {enabled:false,reason:'No OpenMapTiles source'};
  let registered=0;
  try{for(let i=0;i<SPRITES;i++){const name=`mapp-pine-${i}`;if(!map.hasImage?.(name))map.addImage(name,sprite(i,theme),{pixelRatio:2});registered++;}}
@@ -123,9 +123,10 @@ function install(map,{theme='acuarela',maxDesktop=240,maxMobile=130}={}){
     for(const item of items){if(classify(item,layer))cover.push({type:'Feature',geometry:item.geometry,properties:item.properties,__mappLayer:layer});}
    }
    // Waiting for remote tiles: retry on next source loaded / idle.
-   if(!cover.length)return;
+   if(!cover.length){if(onStats)onStats(0);return;}
    const result=generate(cover,bounds,zoom,ceiling());
    map.getSource(SOURCE)?.setData(result);lastKey=key;
+   if(onStats)onStats(result.features.length);
   }catch(err){console.warn('Bosque ilustrado:',err?.message||err);}
  }
  function schedule(ms=110){if(disposed)return;clearTimeout(timer);timer=setTimeout(refresh,ms);}

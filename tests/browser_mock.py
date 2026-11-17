@@ -79,6 +79,9 @@ def run_test():
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
+  assert page.locator('#buildVersion').inner_text()=='v0.5.1'
+  assert 'Z12.0' in page.locator('#buildContext').inner_text()
+  assert 'PINOS' in page.locator('#buildContext').inner_text()
   assert page.evaluate('!Object.keys(window.__testMap._sources).some(k=>k.includes("elevation"))')
   assert page.evaluate('window.__testMap.layout["building-3d:visibility"]')=='none'
   # layered botanical wash and textured water, without DEM

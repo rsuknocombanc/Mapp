@@ -2,6 +2,7 @@
  * MAP-0004/5/6/7. No DEM, extrusions, tracking, implicit routing or forest wallpaper.
  */
 'use strict';
+const APP_VERSION='0.5.1';
 const START=[-70.323,-33.348]; // punto de demostración, NO posición GPS del usuario
 const $=id=>document.getElementById(id);
 // Restrained but saturated palette from the user's hand-painted atlas reference.
@@ -12,6 +13,13 @@ const THEMES={
  tinta:{paper:'#EEE5D3',wood:'#76826C',woodInk:'#565F50',woodLight:'#9BA78D',grass:'#AFBA9D',park:'#B7C1A8',water:'#657D7F',waterEdge:'#4C6668',waterLight:'#A4B5B0',road:'#8D7865',primary:'#766250',minor:'#A39A86',labels:'#565046',halo:'#F3E9D8',lines:'#9B907E'}
 };
 let map,carMarker,searchMarker,selected='acuarela',panel='style',baseReady=false;
+let visibleTrees=0;
+function updateBuildStamp(){
+ const label=$('buildVersion'),context=$('buildContext');
+ if(label)label.textContent='v'+APP_VERSION;
+ if(context)context.textContent=`${selected.toUpperCase()} · Z${map?.getZoom?.().toFixed(1)??'—'} · ${visibleTrees} PINOS`;
+}
+
 let illustratedForest=null; // MAP-0007: georeferenced illustration module
 let searchTimer=null,searchRequest=null,searchSeq=0;
 const searchCache=new Map();
@@ -24,6 +32,7 @@ function layout(id,key,value){try{map.setLayoutProperty(id,key,value)}catch(e){c
 function rampZoom(min,mid,high){return ['interpolate',['linear'],['zoom'],10,min,14,mid,18,high]}
 function artStyle(theme){
  selected=theme;const p=THEMES[theme];
+ updateBuildStamp();
  document.documentElement.style.setProperty('--paper',p.paper);
  document.querySelectorAll('.styleChoice').forEach(b=>{const is=b.dataset.style===theme;b.classList.toggle('active',is);b.setAttribute('aria-pressed',String(is))});
  if(!map||!map.isStyleLoaded())return;
@@ -136,11 +145,13 @@ async function start(){
   carMarker=new maplibregl.Marker({element:el,anchor:'center',rotationAlignment:'map'}).setLngLat(START).addTo(map);
   map.on('load',()=>{
     baseReady=true;artStyle(selected);addArtWashes();
-    illustratedForest=window.MappForest?.install(map,{theme:selected,maxDesktop:260,maxMobile:130})||null;
+    illustratedForest=window.MappForest?.install(map,{theme:selected,maxDesktop:260,maxMobile:130,onStats:count=>{visibleTrees=count;updateBuildStamp()}})||null;
+    updateBuildStamp();
     addRouteLayers();refreshRoute();
     const att=document.createElement('div');att.className='attribution';att.textContent='© OpenStreetMap contributors · OpenFreeMap';att.style.cssText='position:absolute;bottom:0;left:0;z-index:3;background:#f2e9d4db;color:#84755d;font:9px system-ui;padding:3px 6px';$('map').append(att);
     msg(illustratedForest?.enabled?'Mapa listo · árboles ilustrados activos':'Mapa listo · capa de árboles no disponible',true);
   });
+  map.on('zoomend',updateBuildStamp);
   map.on('click',e=>{if(panel!=='route'||!baseReady)return;addWaypoint([e.lngLat.lng,e.lngLat.lat])});
   map.on('error',e=>{if(!baseReady)msg('El mapa está tardando en cargar. Revisa conexión.');console.warn('MapLibre',e.error?.message||e)});
   setTimeout(()=>{if(!baseReady)msg('La cartografía no terminó de cargar. Revisa tu conexión.')},20000);
@@ -266,4 +277,4 @@ $('searchForm').addEventListener('submit',e=>{e.preventDefault();clearTimeout(se
 $('searchClear').onclick=()=>{searchInput.value='';searchReset();searchInput.focus()};
 searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchReset();searchInput.blur()}});
 document.addEventListener('pointerdown',e=>{if(!$('searchShell').contains(e.target))searchShow(false)});
-setPanel('style');updateActions();start();
+setPanel('style');updateActions();updateBuildStamp();start();

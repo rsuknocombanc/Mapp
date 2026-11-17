@@ -31,3 +31,8 @@
 - Capa de símbolos antes de vías y rutas, iconos límites por viewport (130 móvil, 260 PC), actualización diferida y fallback.
 - Rutas manuales y automáticas, búsqueda, GPS, Jimny, agua y papel plano conservados.
 - Node sintaxis y tests geometría/rutas/contrato, Chromium UI simulado OK; UAT real Edge/Safari pendiente.
+
+## [Unreleased] — v0.5.1 diagnóstico en capturas (MAP-0008)
+- Etiqueta esquina superior derecha con versión v0.5.1, tema activo, zoom y cantidad de pinos generados.
+- Callback local para recuento de símbolos; no se envían datos, sin GPS ni dependencia adicional.
+- UAT pendiente para fidelidad artística MAP-0007; esta revisión no modifica la generación de árboles.

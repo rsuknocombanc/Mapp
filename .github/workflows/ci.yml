@@ -21,6 +21,6 @@ jobs:
           from pathlib import Path
           for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md',
           'docs/REQUERIMIENTOS/MAP-0004.md','docs/REQUERIMIENTOS/MAP-0005.md','docs/REQUERIMIENTOS/MAP-0007.md',
-          'docs/DECISIONES/ADR-0007.md','docs/PRUEBAS/UAT-MAP-0007.md']:
+          'docs/DECISIONES/ADR-0007.md','docs/PRUEBAS/UAT-MAP-0007.md','docs/REQUERIMIENTOS/MAP-0008.md','docs/DECISIONES/ADR-0008.md','docs/PRUEBAS/UAT-MAP-0008.md']:
               assert Path(p).is_file(),p
           PY
