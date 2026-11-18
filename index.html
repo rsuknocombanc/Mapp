@@ -17,7 +17,7 @@
   <div class="headerRule"></div>
 </header>
 <aside id="buildStamp" aria-label="Versión y diagnóstico del mapa">
-  <strong id="buildVersion">v0.8.0</strong>
+  <strong id="buildVersion">v0.9.0</strong>
   <small id="buildContext">ACUARELA · Z— · 0 PINOS</small>
 </aside>
 <div id="searchShell" role="search">
@@ -36,11 +36,17 @@
   <div class="dockTabs" role="tablist" aria-label="Panel principal">
     <button id="tabStyle" class="dockTab active" role="tab" aria-selected="true" aria-controls="stylePane">ARTE</button>
     <button id="tabRoute" class="dockTab" role="tab" aria-selected="false" aria-controls="routePane">TRAZAR RUTA</button>
-    <small>EDICIÓN 0.8.0</small>
+    <small>EDICIÓN 0.9.0</small>
   </div>
   <div id="stylePane" role="tabpanel" aria-labelledby="tabStyle">
     <div class="artDefinition"><span class="artMiniature" aria-hidden="true"></span><div><strong>Atlas ilustrado</strong><small>Acuarela · Bosque · Tinta</small></div></div>
-    <p class="helper">Papel cálido, árboles pintados y rutas trazadas a tinta. Un único estilo artístico.</p>
+    <div class="treePicker" role="group" aria-label="Tipo de árbol cenital">
+      <span class="treePickerLabel">ÁRBOLES · VISTA CENITAL</span>
+      <div class="treeChoices">
+        <button id="treeBroadleaf" type="button" class="treeChoice active" aria-pressed="true"><span class="treeThumb broadleaf" aria-hidden="true"></span>Frondoso cenital</button>
+        <button id="treeConifer" type="button" class="treeChoice" aria-pressed="false"><span class="treeThumb conifer" aria-hidden="true"></span>Conífera cenital</button>
+      </div>
+    </div>
   </div>
   <div id="routePane" role="tabpanel" aria-labelledby="tabRoute" hidden>
     <div class="modeRow" role="group" aria-label="Modo de trazado">
@@ -63,6 +69,7 @@
 <script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>
 <script src="./assets/layer-policy.js" defer></script>
 <script src="./assets/forest.js" defer></script>
+<script src="./assets/pigment.js" defer></script>
 <script src="./assets/app.js" defer></script>
 </body>
 </html>

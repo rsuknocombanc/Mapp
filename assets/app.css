@@ -55,3 +55,14 @@ h1{margin:0;font-weight:700;letter-spacing:.20em;font-size:28px;line-height:1}
 .artDefinition strong{font:700 13px Georgia,serif;color:#5C482F}
 .artDefinition small{font:11px Georgia,serif;letter-spacing:.035em;color:#786343}
 .artMiniature{width:33px;height:37px;flex:none;border:1px solid #A88B62;border-radius:3px;background:linear-gradient(143deg,#6B8652 0 51%,#265D65 51% 76%,#EFDEB9 76%);box-shadow:inset 0 0 0 3px #f0e0ba55}
+/* MAP-0013 · compact accessible canopy picker, only top-down tree types */
+.treePicker{border-top:1px solid #c7b69b;padding-top:9px;margin:7px 1px 2px}
+.treePickerLabel{display:block;font:700 10px/1.3 Georgia,serif;color:#856c4d;letter-spacing:.09em;margin-bottom:6px}
+.treeChoices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.treeChoice{display:flex;align-items:center;justify-content:flex-start;gap:7px;min-height:49px;text-align:left;padding:5px 7px;border:1px solid #c6ad83;border-radius:5px;background:#f6ecd9;color:#685339;font:11px/1.2 Georgia,serif}
+.treeChoice.active{background:#e7dfc3;border-color:#9b5737;box-shadow:inset 0 0 0 1px #9b5737}
+.treeChoice[aria-pressed=true]:after{content:'✓';margin-left:auto;color:#6e774c;font:bold 14px system-ui}
+.treeThumb{width:37px;height:37px;flex:none;background-image:url('./trees/canopy-atlas.png');background-repeat:no-repeat;background-size:800% 600%;background-position:0 60%;border-radius:50%}
+.treeThumb.conifer{background-position:0 0}
+@media(max-width:380px){.treeChoice{padding:5px;gap:4px;font-size:10px}.treeThumb{width:32px;height:32px}}
+@media(max-height:650px){.treePicker{padding-top:6px}.treeChoice{min-height:42px}.treeThumb{width:31px;height:31px}}

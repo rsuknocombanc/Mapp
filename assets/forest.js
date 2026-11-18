@@ -4,7 +4,9 @@
  */
 (function(root){
 'use strict';
-const COUNT=8, TONES=3, W=176,H=216, SOURCE='mapp-tree-points',LAYER='mapp-tree-symbols';
+const COUNT=8,TONES=3,W=96,H=96,SOURCE='mapp-tree-points',LAYER='mapp-tree-symbols';
+const FAMILIES=['broadleaf','conifer'];
+const spriteFor=(variant,tone,family='broadleaf')=>'mapp-canopy-'+family+'-'+variant+'-'+tone;
 function hash(a,b,c){let n=(Math.imul(a,374761393)^Math.imul(b,668265263)^Math.imul(c,1274126177))|0;n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;}
 function mercX(lon){return (lon+180)/360;}
 function mercY(lat){const s=Math.sin(Math.max(-85,Math.min(85,lat))*Math.PI/180);return .5-Math.log((1+s)/(1-s))/(4*Math.PI);}
@@ -71,7 +73,8 @@ function getGrid(bounds,zoom){
  return {lod,step,minX:Math.floor(mercX(west)/step)-1,maxX:Math.ceil(mercX(east)/step)+1,
   minY:Math.floor(top/step)-1,maxY:Math.ceil(bottom/step)+1};
 }
-function generate(features,bounds,zoom,cap=420){
+function generate(features,bounds,zoom,cap=420,family='broadleaf'){
+ if(!FAMILIES.includes(family))throw Error('Unknown canopy family: '+family);
  const grid=getGrid(bounds,zoom),out=[],stepX=grid.maxX-grid.minX+1,stepY=grid.maxY-grid.minY+1;
  if(stepX<=0||stepY<=0)return {type:'FeatureCollection',features:out};
  const shapes=[];
@@ -94,7 +97,7 @@ function generate(features,bounds,zoom,cap=420){
   const base=level==='regional'?.53:level==='middle'?.61:.69;
   const range=level==='regional'?.48:level==='middle'?.67:.91;
   const scale=base+range*hash(ix,iy,41)+.11*(cluster-.5);
-  out.push({type:'Feature',id:`${grid.lod}:${ix}:${iy}`,properties:{sprite:`mapp-pine-${variant}-${tone}`,scale,rotation:(hash(ix,iy,53)-.5)*9,rank},geometry:{type:'Point',coordinates:pt}});
+  out.push({type:'Feature',id:`${grid.lod}:${ix}:${iy}`,properties:{sprite:spriteFor(variant,tone,family),variant,tone,scale,rotation:(hash(ix,iy,53)-.5)*9,rank},geometry:{type:'Point',coordinates:pt}});
  }}
  // Spatially unbiased selection when too many symbols, unlike the previous
  // row-order early cutoff that overloaded only the left edge of the viewport.
@@ -108,7 +111,8 @@ function treeIconSizeExpression(){
  return ['interpolate',['linear'],['zoom'],
   6,sized(.17),9,sized(.26),12,sized(.40),14,sized(.57),16,sized(.78),18,sized(.94)];
 }
-function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
+function install(map,{maxDesktop=600,maxMobile=320,onStats=null,initialFamily='broadleaf'}={}){
+ let family=FAMILIES.includes(initialFamily)?initialFamily:'broadleaf',lastData=null;
  if(!map?.getSource?.('openmaptiles'))return {enabled:false,reason:'Vector tile source not loaded'};
  const notify=(count)=>{try{if(typeof onStats==='function')onStats(count);}catch(_){}};
  let disposed=false,timer=null,lastKey='',version=0,ready=false;
@@ -125,8 +129,8 @@ function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
     let items=[];try{items=map.querySourceFeatures('openmaptiles',{sourceLayer:layer})||[]}catch(_){}
     for(const item of items){if(classify(item,layer))cover.push({type:'Feature',properties:item.properties,geometry:item.geometry,__mappLayer:layer});}
    }
-   const result=generate(cover,b,zoom,limit());
-   map.getSource(SOURCE)?.setData(result);
+   const result=generate(cover,b,zoom,limit(),family);
+   lastData=result;map.getSource(SOURCE)?.setData(result);
    lastKey=key;notify(result.features.length);
   }catch(err){console.warn('Mapp bosque ilustrado:',err?.message||err);}
  }
@@ -134,23 +138,31 @@ function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
  function registerSprites(img){
   const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
   const ctx=canvas.getContext('2d',{willReadFrequently:true});if(!ctx)throw Error('Canvas not available');
-  for(let tone=0;tone<TONES;tone++)for(let variant=0;variant<COUNT;variant++){
-   ctx.clearRect(0,0,W,H);ctx.drawImage(img,variant*W,tone*H,W,H,0,0,W,H);
-   map.addImage(`mapp-pine-${variant}-${tone}`,ctx.getImageData(0,0,W,H),{pixelRatio:2});
+  for(let fi=0;fi<FAMILIES.length;fi++)for(let tone=0;tone<TONES;tone++)for(let variant=0;variant<COUNT;variant++){
+   ctx.clearRect(0,0,W,H);ctx.drawImage(img,variant*W,(fi*TONES+tone)*H,W,H,0,0,W,H);
+   map.addImage(spriteFor(variant,tone,FAMILIES[fi]),ctx.getImageData(0,0,W,H),{pixelRatio:2});
   }
  }
  function init(){
   if(disposed)return;
   try{
    map.addSource(SOURCE,{type:'geojson',data:{type:'FeatureCollection',features:[]}});
-   const firstRoad=map.getStyle().layers.find(l=>l.type==='line'&&!l.id.startsWith('mapp-')&&/road|motorway|trunk|primary/.test(l.id.toLowerCase()))?.id;
-   const before=map.getLayer('mapp-commune-boundary')?'mapp-commune-boundary':firstRoad||map.getStyle().layers.find(l=>l.type==='symbol'&&!l.id.startsWith('mapp-'))?.id;
+   // Reorder all vegetation layers below the tree canopy, without touching roads or labels.
+   const style=map.getStyle().layers;
+   const nav=style.find(l=>l.type==='line'&&l['source-layer']==='transportation'&&l.layout?.visibility!=='none');
+   const firstRoad=nav?.id||style.find(l=>l.type==='line'&&!l.id.startsWith('mapp-')&&/road|motorway|trunk/.test(l.id.toLowerCase()))?.id;
+   if(firstRoad&&typeof map.moveLayer==='function'){
+    const greens=style.filter(l=>['landcover','landuse','park'].includes(l['source-layer'])&&['fill','line'].includes(l.type));
+    for(const layer of greens){if(layer.id!==firstRoad)map.moveLayer(layer.id,firstRoad);}
+    if(map.getLayer('mapp-pigment-stamps'))map.moveLayer('mapp-pigment-stamps',firstRoad);
+   }
+   const before=firstRoad||map.getStyle().layers.find(l=>l.type==='symbol'&&!l.id.startsWith('mapp-'))?.id;
    map.addLayer({id:LAYER,type:'symbol',source:SOURCE,minzoom:6,layout:{
-    'icon-image':['get','sprite'],'icon-anchor':'bottom',
+    'icon-image':['get','sprite'],'icon-anchor':'center',
     'icon-size':treeIconSizeExpression(),
     'icon-rotate':['get','rotation'], 'icon-allow-overlap':true,'icon-ignore-placement':true,
     'icon-rotation-alignment':'map','icon-pitch-alignment':'map'
-   },paint:{'icon-opacity':.97}},before);
+   },paint:{'icon-opacity':1}},before);
    if(!map.getLayer(LAYER))throw Error('MapLibre rechazó la capa ilustrada de pinos');
    ready=true;schedule(10);
   }catch(e){console.warn('Mapp árboles: no se pudo instalar',e);notify(0);}
@@ -159,12 +171,21 @@ function install(map,{maxDesktop=600,maxMobile=320,onStats=null}={}){
  const img=new Image();img.decoding='async';
  img.onload=()=>{if(disposed)return;try{registerSprites(img);init()}catch(e){console.warn('Mapp acuarela no disponible:',e);notify(0)}};
  img.onerror=()=>{console.warn('Mapp: no se pudo cargar acuarela transparente');notify(0)};
- img.src=new URL('./assets/trees/watercolor-atlas.png',document.baseURI).href;
+ img.src=new URL('./assets/trees/canopy-atlas.png',document.baseURI).href;
  map.on('moveend',()=>schedule(100));map.on('idle',()=>schedule(130));
  map.on('sourcedata',e=>{if(e?.sourceId==='openmaptiles'&&e.isSourceLoaded){version++;schedule(140)}});
- return {enabled:true,refresh:()=>{lastKey='';schedule(0)},dispose(){disposed=true;clearTimeout(timer)}};
+ return {enabled:true,getFamily:()=>family,setFamily(next){
+   if(!FAMILIES.includes(next))return false;
+   if(family===next)return true;
+   family=next;
+   if(lastData){
+    lastData={...lastData,features:lastData.features.map(f=>({...f,properties:{...f.properties,sprite:spriteFor(f.properties.variant,f.properties.tone,family)}}))};
+    map.getSource(SOURCE)?.setData(lastData);
+   }
+   return true;
+ },refresh:()=>{lastKey='';schedule(0)},dispose(){disposed=true;clearTimeout(timer)}};
 }
-const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,forestLevel,cellSpacing,canopyCluster,treeIconSizeExpression,install};
+const api={hash,mercX,mercY,fromWorld,inRing,classify,shapesFromFeatures,getGrid,generate,forestLevel,cellSpacing,canopyCluster,treeIconSizeExpression,spriteFor,FAMILIES,install};
 root.MappForest=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
