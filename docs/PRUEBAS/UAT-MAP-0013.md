@@ -22,3 +22,6 @@ Fecha: 2026-11-17. Estado: **PLAN APROBADO CON D0; IMPLEMENTACIÓN AUTORIZADA; U
 
 ## Implementación y estrategia de pruebas automáticas
 Se agregan pruebas de archivos PNG RGBA: dimensiones, 48 recortes de copa y 12 manchas con centro/contorno alfa correcto; prueba de cambios de familia sin modificar geometría OSM; algoritmo de manchas determinista y huecos del polígono; validador oficial de expresión MapLibre. **UAT visual real sigue NO EJECUTADA** hasta autorización de preview y prueba en Edge/Safari. La existencia de PNG no garantiza textura idéntica a maquetas estáticas.
+
+## Evidencia automatizada CI — 2026-11-17
+CI [run 44221325353](https://github.com/rsuknocombanc/Mapp/actions/runs/44221325353) `success` para commit `d3e8327ad103d1a43039c8c26f95e4b0f564c11d`: tests de 48/12 PNG, transparencia, selección sin cambio de coordenadas, pigmentos deterministas, huecos de polígonos, límites móviles y expresiones oficiales de MapLibre (control negativo). Rutas, forest y MAP-0012 pasan. **V01–V14 de render real y rendimiento Safari/Edge siguen pendientes**. `gh-pages` NO contiene esta implementación mientras no se autorice publicar v0.9.0.
