@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#ece3ce" />
+<meta name="description" content="Mapp: atlas artístico de acuarela para explorar rutas y lugares reales." />
+<title>Mapp — Atlas de exploración</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.css" />
+<link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+<main id="map" aria-label="Mapa interactivo"></main>
+<div id="paperTexture" aria-hidden="true"></div>
+<header class="masthead">
+  <div class="brandline"><span class="brandstar" aria-hidden="true">✳</span><div><h1>MAPP</h1><p>ATLAS DE EXPLORACIÓN · CHILE</p></div></div>
+  <div class="headerRule"></div>
+</header>
+<aside id="buildStamp" aria-label="Versión y diagnóstico del mapa">
+  <strong id="buildVersion">v0.9.0</strong>
+  <small id="buildContext">ACUARELA · Z— · 0 PINOS</small>
+</aside>
+<div id="searchShell" role="search">
+  <form id="searchForm" autocomplete="off">
+    <span class="searchIcon" aria-hidden="true">⌕</span>
+    <input id="searchInput" type="search" placeholder="Buscar un lugar…" aria-label="Buscar lugar" autocomplete="off" spellcheck="false" aria-controls="searchResults" aria-expanded="false" />
+    <button type="button" id="searchClear" aria-label="Limpiar búsqueda">×</button>
+    <button type="submit" id="searchSubmit" aria-label="Ejecutar búsqueda">IR</button>
+  </form>
+  <div id="searchResults" role="listbox" aria-label="Resultados de lugares" aria-live="polite"></div>
+</div>
+<div id="mapAreaLabel">✦ RUTA DE LOS ANDES · MAPA DE PRUEBA</div>
+<button id="compass" class="mapButton compass" aria-label="Orientar al norte" title="Norte"><span>N</span><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2L22 16L16 30L10 16Z" fill="#a04437"/><path d="M16 30V2L10 16Z" fill="#cabb91"/></svg></button>
+<div class="mapTools"><button class="mapButton" id="zoomIn" aria-label="Acercar">+</button><button class="mapButton" id="zoomOut" aria-label="Alejar">−</button><button class="mapButton" id="locate" aria-label="Mi ubicación GPS">⌖</button></div>
+<section class="dock" aria-label="Controles del mapa">
+  <div class="dockTabs" role="tablist" aria-label="Panel principal">
+    <button id="tabStyle" class="dockTab active" role="tab" aria-selected="true" aria-controls="stylePane">ARTE</button>
+    <button id="tabRoute" class="dockTab" role="tab" aria-selected="false" aria-controls="routePane">TRAZAR RUTA</button>
+    <small>EDICIÓN 0.9.0</small>
+  </div>
+  <div id="stylePane" role="tabpanel" aria-labelledby="tabStyle">
+    <div class="artDefinition"><span class="artMiniature" aria-hidden="true"></span><div><strong>Atlas ilustrado</strong><small>Acuarela · Bosque · Tinta</small></div></div>
+    <div class="treePicker" role="group" aria-label="Tipo de árbol cenital">
+      <span class="treePickerLabel">ÁRBOLES · VISTA CENITAL</span>
+      <div class="treeChoices">
+        <button id="treeBroadleaf" type="button" class="treeChoice active" aria-pressed="true"><span class="treeThumb broadleaf" aria-hidden="true"></span>Frondoso cenital</button>
+        <button id="treeConifer" type="button" class="treeChoice" aria-pressed="false"><span class="treeThumb conifer" aria-hidden="true"></span>Conífera cenital</button>
+      </div>
+    </div>
+  </div>
+  <div id="routePane" role="tabpanel" aria-labelledby="tabRoute" hidden>
+    <div class="modeRow" role="group" aria-label="Modo de trazado">
+      <button id="modeAutomatic" class="modeChoice active" aria-pressed="true">Por caminos</button>
+      <button id="modeManual" class="modeChoice" aria-pressed="false">Trazado libre</button>
+    </div>
+    <p id="routeHelp" class="routeHelp">Toca el mapa para marcar A (origen) y B (destino).</p>
+    <div class="routeActions">
+      <button id="routeFromGps" class="smallButton">Origen GPS</button>
+      <button id="routeAddStop" class="smallButton" disabled>+ Parada</button>
+      <button id="routeUndo" class="smallButton" disabled>Deshacer</button>
+      <button id="routeClear" class="smallButton" disabled>Limpiar</button>
+      <button id="routeCalculate" class="primaryButton" disabled>Calcular</button>
+    </div>
+    <p id="routeSummary" aria-live="polite" class="routeSummary">Sin ruta seleccionada.</p>
+    <p class="notice">Automática: servicio de demostración OSRM. Libre: línea orientativa sin navegación vial. Comprueba accesos y cierres.</p>
+  </div>
+  <div class="status"><span class="statusDot" id="statusDot"></span><span id="statusText" role="status">Cargando mapa…</span><span id="routeLegend" hidden>━ ╌ RUTA</span></div>
+</section>
+<script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>
+<script src="./assets/layer-policy.js" defer></script>
+<script src="./assets/forest.js" defer></script>
+<script src="./assets/pigment.js" defer></script>
+<script src="./assets/app.js" defer></script>
+</body>
+</html>

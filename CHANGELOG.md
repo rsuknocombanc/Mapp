@@ -1,0 +1,71 @@
+# CHANGELOG
+## [Unreleased] — v0.3 artística (MAP-0002)
+- Bosques con estampados Canvas sobre polígonos geográficos y selector dinámico.
+- Relieve hillshade 2D con DEM opcional.
+- Ajustes de papel, tipografía, UI y fallback de carga.
+- Pendiente validación real Safari y aprobación de diseño.
+
+## [0.3.1] — Cotas + lugares (experimental)
+- Sustituye textura forestal periódica por color-relief de altitud DEM, preservando geografía.
+- Bandas hipsométricas con paleta ilustrada y hillshade suave.
+- Desactiva extrusiones de edificios y baja su peso visual.
+- Incorpora buscador Photon con resultados georreferenciados, marcador propio y manejo de errores.
+- Pruebas estáticas y de interfaz simulada; Safari real pendiente.
+
+## [Unreleased] — v0.4 atlas plano y rutas
+- Sin DEM ni hillshade; acuarelas vectoriales ligeras en bosques y agua, papel crema.
+- Vías principales raya-punto; detalle secundario según zoom.
+- Rutas OSRM automáticas y trazado libre, waypoints, búsqueda y GPS opcional.
+- UAT real Edge/Safari pendiente.
+
+## [Unreleased] — v0.4.1 refinamiento de pigmentos (MAP-0006)
+- Verde oliva profundo y agua petróleo, acordes a referencia manual.
+- Bosque y agua con tintas más densas y segunda aguada clara de baja intensidad.
+- Bordes con doble línea: halo difuso y sobreimpresión discontinua de pastel, además de trazos secos en vías principales y ruta activa.
+- Conserva rutas automáticas OSRM, trazado libre, búsqueda Photon, GPS y mapa 2D; no introduce nuevas fuentes DEM.
+- Contrato/JS/rutas/Chromium simulado OK; UAT real en Edge y Safari pendiente.
+
+## [Unreleased] — v0.5 Árboles ilustrados (MAP-0007)
+- 8 variantes originales de coníferas y pequeños grupos, con facetas tipo pastel pintadas por Canvas; tres paletas coherentes con el mapa.
+- Posición determinista georreferenciada dentro de polígonos de vegetación OpenMapTiles, con huecos, densidad por tipo y nivel de zoom; sin wallpaper repetido.
+- Capa de símbolos antes de vías y rutas, iconos límites por viewport (130 móvil, 260 PC), actualización diferida y fallback.
+- Rutas manuales y automáticas, búsqueda, GPS, Jimny, agua y papel plano conservados.
+- Node sintaxis y tests geometría/rutas/contrato, Chromium UI simulado OK; UAT real Edge/Safari pendiente.
+
+## [Unreleased] — v0.5.1 diagnóstico en capturas (MAP-0008)
+- Etiqueta esquina superior derecha con versión v0.5.1, tema activo, zoom y cantidad de pinos generados.
+- Callback local para recuento de símbolos; no se envían datos, sin GPS ni dependencia adicional.
+- UAT pendiente para fidelidad artística MAP-0007; esta revisión no modifica la generación de árboles.
+
+## [Unreleased] — v0.6.0 atlas acuarelado definitivo (MAP-0009)
+- Estilo único: acuarela, bosque y tinta integrados. Se eliminan las tres opciones del panel.
+- Ocho pinos aprobados en acuarela en atlas PNG transparente (24 variantes leves de tono), un solo archivo ≈294 KB.
+- Densidad visible ampliada sobre bosques (~32 px frente a 72 px), cobertura adicional de praderas/parques más dispersa, límite móvil/escritorio y posiciones geográficas estables.
+- Papel cálido, bosque oliva intenso, agua azul petróleo oscuro y caminos óxido; rutas y búsqueda conservadas.
+- Pruebas estáticas, geometría y Chromium simulando MapLibre superadas; Safari/Edge con teselas reales pendientes.
+
+## [0.6.1] — Corrección del render de pinos (MAP-0010)
+- Se reestructura `icon-size` como expresión `interpolate(zoom)` de nivel superior; conserva multiplicadores individuales para variar tamaño.
+- Se verifica la existencia real de `mapp-tree-symbols` tras registrar la capa.
+- Se agrega test en CI usando MapLibre Style Spec oficial, con caso inválido de regresión; el mock también detecta anidamiento ilegal.
+- Número de versión visible actualizado; UAT real pendiente y `main` intacta.
+
+## [0.7.0] — Bosques por zoom y contorno acuarelado (MAP-0011)
+- Vista regional: pinos pequeños y frecuentes, arboledas con claros por ruido de densidad espacial.
+- Vista cercana: pinos de mayor tamaño y composición expresiva.
+- Bordes de bosque, pasto y parques suavizados con pigmento difuso; papel, agua, rutas y buscador conservados.
+- UAT visual y rendimiento real pendientes.
+
+## [0.8.0] — MAP-0012, simplificación cartográfica D1
+- Piscinas privadas filtradas en agua base y cuatro pasadas pictóricas; `pond` se muestra desde z14.
+- Ocultación de superficies urbanas/canchas/edificios/POI/ferrocarriles, etiquetas y caminos jerarquizados por zoom.
+- Huellas `track` y senderos `path` conservados; pasajes urbanos `pedestrian` ocultos siempre; vías de servicio diferidas a z15.
+- Nueva capa de límites comunales `admin_level=8` desde z11 si existe geometría en tiles de OpenFreeMap.
+- Módulo declarativo con diagnóstico, rollback, tests Node y validador oficial de MapLibre; UAT Edge/Safari pendiente.
+
+## [0.9.0 — development only] — MAP-0013 copas cenitales y manchas multitonales
+- Dos familias de árboles de copa radial/oval desde arriba, 8 variantes y 3 tonos cada una, 48 sprites PNG.
+- Nuevo atlas de 12 manchas orgánicas con bordes de alfa suave y verde claro/medio/oscuro, georreferenciadas a polígonos OSM con límites por viewport.
+- Eliminación de halos/contornos triangulados en áreas verdes; símbolos de árboles por encima de toda vegetación y debajo de rutas, vías y etiquetas.
+- Selector exclusivamente Conífera cenital / Frondoso cenital (predeterminado), preserva geometría y distribución al alternar.
+- Pruebas PNG, Style Spec y regresión planificadas. **No publicado en Pages; UAT Safari/Edge pendiente, main estable.**
