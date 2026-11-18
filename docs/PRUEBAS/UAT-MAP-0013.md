@@ -1,5 +1,5 @@
 # UAT / Matriz de pruebas propuesta — MAP-0013 (no ejecutada)
-Fecha: 2026-11-17. Estado: **BORRADOR DE DISEÑO**.
+Fecha: 2026-11-17. Estado: **PLAN APROBADO CON D0; IMPLEMENTACIÓN AUTORIZADA; UAT REAL NO EJECUTADA**.
 
 | ID | Prueba | Resultado / evidencia requerida |
 | --- | --- | --- |

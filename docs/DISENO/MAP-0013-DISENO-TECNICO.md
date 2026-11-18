@@ -1,5 +1,5 @@
 # MAP-0013 — Diseño técnico D0: vegetación orgánica + árboles cenitales
-Versión D0 | 2026-11-17 | **PROPUESTO PARA APROBACIÓN** (no implementado, no desplegado).
+Versión D0 | 2026-11-17 | **D0 APROBADO, IMPLEMENTACIÓN AUTORIZADA** (2026-11-17); preview/despliegue aún no autorizados.
 Fuente de verdad: Issue #6, `docs/REQUERIMIENTOS/MAP-0013.md`, screenshot Edge/Safari, Mapp v0.8.0.
 Alcance de esta sesión: diseño y dos comparaciones visuales **conceptuales**, no commit de código.
 
@@ -66,3 +66,8 @@ Orden lógico **de abajo hacia arriba**:
 
 ## 7. Aprobaciones y continuidad
 **Solo se ha autorizado estudiar y mostrar el diseño.** El presente D0 requiere aceptación explícita, idealmente confirmando las dos familias, la técnica B y `Frondoso cenital` como predeterminado. La implementación, CI funcional y publicación de preview requieren autorización independiente posterior. No fusionar `main` sin UAT y consentimiento adicional. Se preserva ADR-0011 como historial y se crea borrador ADR-0013 no adoptado.
+
+## 8. Compuertas de aprobación formal
+Confirmación única de diseño D0 recibida dos veces: «Apruebo el diseño técnico D0 de MAP-0013: manchas orgánicas multitonales, árboles por encima de la vegetación, selector con Conífera cenital y Frondoso cenital, este último predeterminado. Registra la aprobación. Todavía no autorizo implementar; solicita esa autorización por separado.»
+Autorización posterior independiente: «Autorizo el desarrollo e implementación».
+Se habilitan desarrollo, integración de recursos al prototipo en rama y validación CI. **NO queda habilitado publicar `gh-pages` ni fusionar `main`; solicitar ambos permisos antes de actuar.**
