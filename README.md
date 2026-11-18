@@ -46,3 +46,6 @@ Zoom regional con pinos finos, densos y agrupados mediante ruido suave georrefer
 
 ## v0.8.0 — Política de limpieza cartográfica (MAP-0012)
 La vista atlas filtra piscinas privadas en cinco capas de agua, oculta estanques hasta zoom 14, elimina decoración urbana redundante y pasajes peatonales urbanos, conserva senderos rurales y huellas 4x4 con umbrales propios. Muestra líneas comunales `admin_level=8` de Chile desde zoom 11 **si la fuente vectorial contiene la geometría**; el diagnóstico devuelve «not-observed» si no hay datos en las tiles actuales, no extrapola cobertura nacional. Política versionada y reversible, preserva rutas, Jimny y búsqueda. UI real Edge/Safari pendiente de aceptación.
+
+## MAP-0013 — desarrollo v0.9.0 en rama (SIN PUBLICAR)
+Árboles exclusivamente cenitales con atlas RGBA 48 copas (Frondoso predeterminado / Conífera), alternables sin mover coordenadas de la cobertura OSM. Se reemplazan halos vegetales angulosos por manchas de pigmento orgánico con tres tonalidades, atlas PNG 12 sellos, muestra georreferenciada determinista y 80/160 máximos móvil/PC. Orden vegetación y pigmentos < copas < vías y etiquetas < ruta. Al no cambiar fuentes geográficas, no constituye inventario de especies. Vista previa v0.8.0 intacta hasta autorización separada de publicar y UAT Safari/Edge.

@@ -32,6 +32,7 @@ class FakeMap{
  getSource(id){return this._sources[id]}
  addSource(id,o){this._sources[id]={setData:d=>{this._sources[id].data=d},data:o.data}}
  getLayer(id){return this._style.layers.find(l=>l.id===id)}
+ moveLayer(id,before){const item=this.getLayer(id);if(!item)return;this.removeLayer(id);const j=this._style.layers.findIndex(l=>l.id===before);if(j>=0)this._style.layers.splice(j,0,item);else this._style.layers.push(item)}
  addLayer(o,before){
    if(o.id==='mapp-tree-symbols'){
      const size=o.layout?.['icon-size'];
@@ -85,44 +86,54 @@ def run_test():
   html=html.replace('<link rel="stylesheet" href="./assets/app.css" />','<style>'+ (ROOT/'assets/app.css').read_text()+'</style>')
   html=html.replace('<script src="https://unpkg.com/maplibre-gl@5.7.1/dist/maplibre-gl.js"></script>','<script>'+FAKE+fake_fetch+'</script>')
   forest=(ROOT/'assets/forest.js').read_text()
-  data='data:image/png;base64,'+base64.b64encode((ROOT/'assets/trees/watercolor-atlas.png').read_bytes()).decode('ascii')
-  asset_line="img.src=new URL('./assets/trees/watercolor-atlas.png',document.baseURI).href;"
+  data='data:image/png;base64,'+base64.b64encode((ROOT/'assets/trees/canopy-atlas.png').read_bytes()).decode('ascii')
+  asset_line="img.src=new URL('./assets/trees/canopy-atlas.png',document.baseURI).href;"
   assert asset_line in forest
   forest=forest.replace(asset_line, 'img.src='+json.dumps(data)+';')
   policy=(ROOT/'assets/layer-policy.js').read_text()
   html=html.replace('<script src="./assets/layer-policy.js" defer></script>','<script>'+policy+'</script>')
   html=html.replace('<script src="./assets/forest.js" defer></script>','<script>'+forest+'</script>')
+  pigment=(ROOT/'assets/pigment.js').read_text()
+  pigment_asset='data:image/png;base64,'+base64.b64encode((ROOT/'assets/trees/pigment-atlas.png').read_bytes()).decode('ascii')
+  pigment=pigment.replace("img.src=new URL('./assets/trees/pigment-atlas.png',document.baseURI).href;","img.src="+json.dumps(pigment_asset)+";")
+  html=html.replace('<script src="./assets/pigment.js" defer></script>','<script>'+pigment+'</script>')
   html=html.replace('<script src="./assets/app.js" defer></script>','<script>'+ (ROOT/'assets/app.js').read_text()+'</script>')
   page.set_content(html,wait_until='load')
   page.wait_for_function('window.__testMap && window.__testMap.getSource("mapp-route")')
   assert page.locator('#statusText').inner_text().startswith('Mapa listo')
-  assert page.locator('#buildVersion').inner_text()=='v0.8.0'
+  assert page.locator('#buildVersion').inner_text()=='v0.9.0'
   assert 'Z12.0' in page.locator('#buildContext').inner_text()
   assert 'ATLAS' in page.locator('#buildContext').inner_text()
   assert page.get_by_text('Acuarela · Bosque · Tinta').count()==1
   assert page.locator('.styleChoice').count()==0
-  assert 'PINOS' in page.locator('#buildContext').inner_text()
+  assert 'ÁRBOLES' in page.locator('#buildContext').inner_text()
   assert page.evaluate('!Object.keys(window.__testMap._sources).some(k=>k.includes("elevation"))')
   assert page.evaluate('window.__testMap.layout["building-3d:visibility"]')=='none'
   # layered botanical wash and textured water, without DEM
   assert page.evaluate('window.__testMap.getLayer("mapp-water-wash") && window.__testMap.getLayer("mapp-forest-wash")')
-  assert page.evaluate('window.__testMap.getLayer("mapp-forest-pastel") && window.__testMap.getLayer("mapp-water-pastel")')
+  assert page.evaluate('window.__testMap.getLayer("mapp-pigment-stamps") && window.__testMap.getLayer("mapp-water-pastel")')
   assert page.evaluate('window.__testMap.getLayer("mapp-route-pastel")')
   page.wait_for_function('window.__testMap.getSource("mapp-tree-points")?.data?.features?.length>0')
-  assert page.evaluate('Object.keys(window.__testMap.images).length')==24
+  assert page.evaluate('Object.keys(window.__testMap.images).length')==60
   assert page.evaluate('window.__testMap.getLayer("mapp-tree-symbols").type')=='symbol'
   assert page.evaluate('window.__testMap._style.layers.findIndex(x=>x.id==="mapp-tree-symbols") < window.__testMap._style.layers.findIndex(x=>x.id==="road_motorway")')
   assert 30<page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.length')<=320
-  assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data.length')==176*216*4
-  assert page.evaluate('window.__testMap.images["mapp-pine-0-0"].data[3*176*4+40*4+3]') in range(256)
+  assert page.evaluate('window.__testMap.images["mapp-canopy-broadleaf-0-0"].data.length')==96*96*4
+  assert page.evaluate('window.__testMap.images["mapp-canopy-broadleaf-0-0"].data[3*96*4+40*4+3]') in range(256)
   # A hand-drawn double contour, with no repeated polygon wallpaper texture.
   assert page.evaluate('window.__testMap.getLayer("mapp-water-pastel").paint["line-dasharray"].length')==6
   assert page.evaluate('window.__testMap.paint["water:fill-color"]')=='#265D65'
   assert page.evaluate('window.__testMap.getLayer("mapp-commune-boundary")?.minzoom')==11
   assert page.evaluate('window.__testMap.getLayer("water")?.paint?.["fill-opacity"]?.[0]')=='step'
-  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.73
-  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.59
+  assert page.evaluate('window.__testMap.paint["landcover-wood:fill-opacity"]')==.43
+  assert page.evaluate('window.__testMap.getLayer("mapp-forest-wash").paint["fill-opacity"]')==.24
 
+  assert page.get_by_role('button',name='Frondoso cenital').get_attribute('aria-pressed')=='true'
+  page.get_by_role('button',name='Conífera cenital').click()
+  assert page.get_by_role('button',name='Conífera cenital').get_attribute('aria-pressed')=='true'
+  assert page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.every(f=>f.properties.sprite.includes("conifer"))')
+  page.get_by_role('button',name='Frondoso cenital').click()
+  assert page.evaluate('window.__testMap.getSource("mapp-tree-points").data.features.every(f=>f.properties.sprite.includes("broadleaf"))')
   # No longer three style choices: watercolor, wood and ink are one visual identity.
   assert page.get_by_role('button',name='Bosque',exact=True).count()==0
   assert page.get_by_role('button',name='Tinta',exact=True).count()==0

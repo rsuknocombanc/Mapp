@@ -11,7 +11,7 @@ assert(x.features.length>30,`strong forest must contain visible symbols, got ${x
 assert(x.features.length<=480,'budget');
 for(const t of x.features){const [lon,lat]=t.geometry.coordinates;
  assert(f.inRing(lon,lat,forest));assert(!f.inRing(lon,lat,lake));
- assert(/^mapp-pine-[0-7]-[0-2]$/.test(t.properties.sprite));
+ assert(/^mapp-canopy-broadleaf-[0-7]-[0-2]$/.test(t.properties.sprite));
  assert(t.properties.scale>=.45&&t.properties.scale<=1.7);
 }
 const b2=bounds(-70.43,-70.12,-33.56,-33.23);
@@ -46,3 +46,14 @@ assert.equal(f.canopyCluster(123,45),f.canopyCluster(123,45));
 const patches=new Set(Array.from({length:25},(_,i)=>f.canopyCluster(i,10).toFixed(3)));
 assert(patches.size>8,'natural variation must not be uniform');
 console.log('Zoom-dependent groves, clustering, scales and geometry OK');
+
+const conifer=f.generate([feature],b,12.3,480,'conifer');
+assert.equal(conifer.features.length,x.features.length);
+for(let i=0;i<conifer.features.length;i++){
+ assert.deepEqual(conifer.features[i].geometry,x.features[i].geometry);
+ assert(/^mapp-canopy-conifer-[0-7]-[0-2]$/.test(conifer.features[i].properties.sprite));
+}
+assert.equal(f.spriteFor(1,2,'broadleaf'),'mapp-canopy-broadleaf-1-2');
+assert.equal(f.spriteFor(1,2,'conifer'),'mapp-canopy-conifer-1-2');
+assert.throws(()=>f.generate([feature],b,12.3,480,'pine-profile'));
+console.log('MAP-0013: both top-down families preserve world coordinates and density');

@@ -15,6 +15,9 @@ jobs:
           python3 tests/check_contract.py
           node --check assets/app.js
           node --check assets/forest.js
+          node --check assets/pigment.js
+          node tests/test_pigment_logic.js
+          python3 tests/test_art_png.py
           node --check assets/layer-policy.js
           node tests/test_layer_policy.js
           node tests/test_route_logic.js
@@ -22,11 +25,12 @@ jobs:
           node --check tests/test_tree_style.js
           python3 - <<'PY'
           from pathlib import Path
-          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0007.md','docs/REQUERIMIENTOS/MAP-0008.md','docs/REQUERIMIENTOS/MAP-0009.md','docs/DECISIONES/ADR-0009.md','docs/PRUEBAS/UAT-MAP-0009.md','docs/REQUERIMIENTOS/MAP-0010.md','docs/DECISIONES/ADR-0010.md','docs/PRUEBAS/UAT-MAP-0010.md','docs/REQUERIMIENTOS/MAP-0011.md','docs/DECISIONES/ADR-0011.md','docs/PRUEBAS/UAT-MAP-0011.md','docs/REQUERIMIENTOS/MAP-0012.md','docs/DISENO/MAP-0012-DISENO-TECNICO.md','docs/DECISIONES/ADR-0012.md','docs/PRUEBAS/UAT-MAP-0012.md','assets/layer-policy.js','tests/test_layer_policy.js','tests/test_policy_style.js','assets/trees/watercolor-atlas.png']:
+          for p in ['AGENTS.md','METODOLOGIA.md','docs/CONTEXTO.md','docs/BITACORA.md','docs/REQUERIMIENTOS/MAP-0007.md','docs/REQUERIMIENTOS/MAP-0008.md','docs/REQUERIMIENTOS/MAP-0009.md','docs/DECISIONES/ADR-0009.md','docs/PRUEBAS/UAT-MAP-0009.md','docs/REQUERIMIENTOS/MAP-0010.md','docs/DECISIONES/ADR-0010.md','docs/PRUEBAS/UAT-MAP-0010.md','docs/REQUERIMIENTOS/MAP-0011.md','docs/DECISIONES/ADR-0011.md','docs/PRUEBAS/UAT-MAP-0011.md','docs/REQUERIMIENTOS/MAP-0012.md','docs/DISENO/MAP-0012-DISENO-TECNICO.md','docs/DECISIONES/ADR-0012.md','docs/PRUEBAS/UAT-MAP-0012.md','assets/layer-policy.js','tests/test_layer_policy.js','tests/test_policy_style.js','docs/REQUERIMIENTOS/MAP-0013.md','docs/DISENO/MAP-0013-DISENO-TECNICO.md','docs/DECISIONES/ADR-0013.md','docs/PRUEBAS/UAT-MAP-0013.md','assets/trees/watercolor-atlas.png','assets/trees/canopy-atlas.png','assets/trees/pigment-atlas.png']:
               assert Path(p).is_file(),p
           PY
       - name: Validate tree layer using official MapLibre style specification
         run: |
           npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund @maplibre/maplibre-gl-style-spec@26.4.4
           node tests/test_tree_style.js
+          node tests/test_pigment_style.js
           node tests/test_policy_style.js

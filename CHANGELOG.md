@@ -62,3 +62,10 @@
 - Huellas `track` y senderos `path` conservados; pasajes urbanos `pedestrian` ocultos siempre; vías de servicio diferidas a z15.
 - Nueva capa de límites comunales `admin_level=8` desde z11 si existe geometría en tiles de OpenFreeMap.
 - Módulo declarativo con diagnóstico, rollback, tests Node y validador oficial de MapLibre; UAT Edge/Safari pendiente.
+
+## [0.9.0 — development only] — MAP-0013 copas cenitales y manchas multitonales
+- Dos familias de árboles de copa radial/oval desde arriba, 8 variantes y 3 tonos cada una, 48 sprites PNG.
+- Nuevo atlas de 12 manchas orgánicas con bordes de alfa suave y verde claro/medio/oscuro, georreferenciadas a polígonos OSM con límites por viewport.
+- Eliminación de halos/contornos triangulados en áreas verdes; símbolos de árboles por encima de toda vegetación y debajo de rutas, vías y etiquetas.
+- Selector exclusivamente Conífera cenital / Frondoso cenital (predeterminado), preserva geometría y distribución al alternar.
+- Pruebas PNG, Style Spec y regresión planificadas. **No publicado en Pages; UAT Safari/Edge pendiente, main estable.**

@@ -19,12 +19,12 @@ const style={
   sources:{trees:{type:'geojson',data:{type:'FeatureCollection',features:[]}}},
   layers:[{id:'mapp-tree-symbols',type:'symbol',source:'trees',minzoom:6,
     layout:{
-      'icon-image':['get','sprite'],'icon-anchor':'bottom',
+      'icon-image':['get','sprite'],'icon-anchor':'center',
       'icon-size':iconSize,'icon-rotate':['get','rotation'],
       'icon-allow-overlap':true,'icon-ignore-placement':true,
       'icon-rotation-alignment':'map','icon-pitch-alignment':'map'
     },
-    paint:{'icon-opacity':.97}
+    paint:{'icon-opacity':1}
   }]
 };
 const valid=validateStyle(style);

@@ -19,3 +19,6 @@ Fecha: 2026-11-17. Estado: **PLAN APROBADO CON D0; IMPLEMENTACIÓN AUTORIZADA; U
 | V14 | Mancha sobre agujeros de polígonos / agua | No se dibujan bosques en huecos ni sobre lagos, se respeta orientación geográfica |
 
 **Estado UAT real: NO EJECUTADA.** Las dos comparaciones en conversación 2026-11-17 son imágenes conceptuales estáticas. La fuente real es OpenFreeMap/OSM y no está validado el resultado en MapLibre/Safari. Aprobación de diseño y permiso de implementar se solicitarán antes de generar una preview funcional.
+
+## Implementación y estrategia de pruebas automáticas
+Se agregan pruebas de archivos PNG RGBA: dimensiones, 48 recortes de copa y 12 manchas con centro/contorno alfa correcto; prueba de cambios de familia sin modificar geometría OSM; algoritmo de manchas determinista y huecos del polígono; validador oficial de expresión MapLibre. **UAT visual real sigue NO EJECUTADA** hasta autorización de preview y prueba en Edge/Safari. La existencia de PNG no garantiza textura idéntica a maquetas estáticas.
