@@ -89,3 +89,7 @@ Implementación autorizada D0 completada en `feature/bootstrap-vintage-map` comm
 
 ## Continuidad
 MAP-0013 v0.9.0 EN RAMA PR #1, CI success run 44221325353, **NO PUBLICADO**. Pedir permiso separado para actualizar preview `gh-pages`; tras despliegue autorizado, validar Safari iPhone/Edge de pigmentos, copas, capas y rutas. No afirmar UAT ni cobertura externa sin prueba. `main` estable sin merge; MAP-0012 UAT también pendiente.
+
+
+## 2026-11-17 — Autorización de publicación preview v0.9.0
+Usuario ordena expresamente «Publica» tras confirmarse v0.9.0 implementada y CI verde. Se actualiza `gh-pages` mediante avance fast-forward desde `801fa5941407ec452b401a6e2890b123e4ba1897` a `d3e8327ad103d1a43039c8c26f95e4b0f564c11d`; operación GitHub exitosa y ref verificada idéntica al commit objetivo. `gh-pages/index.html` identifica v0.9.0. URL prevista: https://rsuknocombanc.github.io/Mapp/. Aún pendiente verificar finalización del procesamiento de Pages y UAT visual Safari/Edge; NO afirmar que ambos estén completos. `main` sin merge, PR #1 permanece abierto. Próximo paso: confirmar Pages y validar visualmente MAP-0013.
