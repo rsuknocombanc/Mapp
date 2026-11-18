@@ -45,7 +45,7 @@ assert 'MappLayerPolicy.applyPolicy(map)' in a
 print('MAP-0012 approved D1 visibility layer contract OK')
 
 for tree_id in ['treeBroadleaf','treeConifer']:
- assert tree_id in p.ids,tree_id
+ assert f'id="{tree_id}"' in h,tree_id
 assert 'Frondoso cenital' in h and 'Conífera cenital' in h
 assert h.count('aria-pressed="true"')>=1
 assert "initialFamily:'broadleaf'" in a

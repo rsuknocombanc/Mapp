@@ -3,7 +3,7 @@ import struct
 import zlib
 def rgba(path,width,height):
  data=Path(path).read_bytes()
- assert data[:8]==b'\\x89PNG\\r\\n\\x1a\\n',path
+ assert data[:8]==b'\x89PNG\r\n\x1a\n',path
  pos=8;raw=b''
  while pos<len(data):
   length=int.from_bytes(data[pos:pos+4],'big');pos+=4
